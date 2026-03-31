@@ -12,9 +12,11 @@ A table where rows are grouped together into categories.
 * `titleText`: the text that should appear in the title (including table number).
 *  `subtitleText`: the (optional) text that should appear in the subtitle.
 * `sourceText`: the source text (not including *Source: *).
+* `minColWidth`: minimum column width in pixels, across all columns.
+* `maxColWidth`: maximum column width in pixels, across all columns.
 
 ## Accessibility
 
 * Formal accessibility tested still to be carried out.
 * Based on Example 2 in [this guide](https://www.w3.org/WAI/tutorials/tables/multi-level/), using the `headers` attribute to properly associated headers with the data cell.
-* Table title is implemented as a `caption`.
+* Table title and subtitle are implemented as text so that they do not scroll with the title. However, the content is repeated and visually hidden as a `caption` so that screenreaders can access the table more easily.

@@ -1,8 +1,53 @@
 table {
     border-collapse: collapse;
     width: 100%;
-    font-family: sans-serif;
+    font-family: "Open Sans", sans-serif;
 }
+
+
+/* Horizontal scroll */
+.table-scroll {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.table-scroll table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: collapse;
+}
+
+/* Column widths */
+.table-scroll col {
+    min-width: var(--min-col-width);
+    max-width: var(--max-col-width);
+}
+
+/* Screenreader-only caption */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+}
+
+/* Title + Subtitle */
+.table-title {
+    font-size: 1.17em;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.table-subtitle {
+    margin-bottom: 1rem;
+}
+
+
 
 /* full‑width thick header line */
 thead tr {
@@ -44,23 +89,3 @@ tbody th[scope="row"] {
     text-align: right;
 }
 
-/* ------------------------------------------------------------
-   Caption styled like an H3
-   ------------------------------------------------------------ */
-caption, .table-title {
-    font-size: 1.17em; 
-    font-weight: bold; 
-    margin-bottom: 0.75rem; 
-    text-align: left;    
-    font-family: "Open Sans", sans-serif;
-    font-feature-settings: "salt" 1;
-}
-
-
-/* subtitle underneath */
-caption .table-subtitle {
-    font-size: 1em;
-    font-weight: normal;
-    margin-bottom: 0.75rem;  
-    text-align: left;
-}

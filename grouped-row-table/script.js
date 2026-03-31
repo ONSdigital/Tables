@@ -10,71 +10,91 @@ function drawTable() {
 
     container.html("");
 
+    /* =========================================================
+       TITLE + SUBTITLE (visible, non-scrolling)
+       ========================================================= */
+    if (config.titleText) {
+        container.append("div")
+            .attr("class", "table-title")
+            .text(config.titleText);
+    }
+
+    if (config.subtitleText) {
+        container.append("div")
+            .attr("class", "table-subtitle")
+            .text(config.subtitleText);
+    }
+
+    /* =========================================================
+       SCROLL WRAPPER (table scrolls, titles do NOT)
+       ========================================================= */
+    const scrollWrapper = container.append("div")
+        .attr("class", "table-scroll")
+        .style("--min-col-width", config.minColWidth + "px")
+        .style("--max-col-width", config.maxColWidth + "px");
+
+    const table = scrollWrapper.append("table");
+
+    /* =========================================================
+       ACCESSIBLE CAPTION (screen-reader only)
+       ========================================================= */
+    table.append("caption")
+        .attr("class", "visually-hidden")
+        .text(
+            config.subtitleText
+                ? `${config.titleText} – ${config.subtitleText}`
+                : config.titleText
+        );
+
     /* ---------------------------------------------------------
        COLUMN STRUCTURE
        --------------------------------------------------------- */
     const allColumns = tableData.columns;
     const groupColumn = "group";
 
-    // remove group column
-    const dataColumns = allColumns.filter(c => c !== groupColumn);
+    // All non-group columns
+    const dataColumns = allColumns.filter(d => d !== groupColumn);
 
-    // FIRST non-group column = row header column (name)
+    // Row header column (name)
     const nameColumn = dataColumns[0];
 
-    // remaining columns = real data columns
+    // The rest are the value columns
     const valueColumns = dataColumns.slice(1);
 
-    // colTypes applies ONLY to valueColumns
+    // colTypes corresponds ONLY to valueColumns
     const colTypes = config.colTypes.split("");
 
-    // group data rows by group label
+    // group rows by group column
     const grouped = d3.group(tableData, d => d[groupColumn]);
 
-    /* ---------------------------------------------------------
-       BUILD TABLE
-       --------------------------------------------------------- */
-    const table = container.append("table");
-
-    /* ---------- CAPTION ---------- */
-    const caption = table.append("caption");
-
-    caption.append("div")
-        .attr("class", "table-title")
-        .text(config.titleText);
-
-    if (config.subtitleText) {
-        caption.append("div")
-            .attr("class", "table-subtitle")
-            .text(config.subtitleText);
-    }
-
-    addSource("source", config.sourceText);
-
-    /* ---------- COLGROUP ---------- */
+    /* =========================================================
+       COLGROUP (column widths + alignment)
+       ========================================================= */
     const colgroup = table.append("colgroup");
 
-    // name column (row header)
+    // First column = row header (name)
     colgroup.append("col").attr("class", "col--text");
 
-    // value columns
+    // Value columns
     valueColumns.forEach((col, i) => {
         const typeChar = colTypes[i];
         const typeClass =
             typeChar === "n" ? "col--number" :
             typeChar === "d" ? "col--date" :
             "col--text";
+
         colgroup.append("col").attr("class", typeClass);
     });
 
-    /* ---------- THEAD ---------- */
+    /* =========================================================
+       THEAD (only value columns!)
+       ========================================================= */
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
 
-    // blank corner (row header column)
+    // Blank corner for row headers
     headerRow.append("td");
 
-    // ✅ ONLY VALUE COLUMNS in THEAD
     headerRow.selectAll("th")
         .data(valueColumns.map((col, i) => ({
             col,
@@ -91,17 +111,18 @@ function drawTable() {
         )
         .text(d => d.col);
 
-    /* ---------- TBODY ---------- */
+    /* =========================================================
+       TBODY
+       ========================================================= */
     const tbody = table.append("tbody");
 
-    // colspan = 1 name column + N value columns
-    const colSpan = valueColumns.length + 1;
+    const colSpan = valueColumns.length + 1; // name column + N values
 
     for (const [groupName, rows] of grouped) {
 
         const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
-        // group row
+        /* ----- GROUP HEADER ROW ----- */
         tbody.append("tr")
             .append("th")
             .attr("id", groupId)
@@ -109,13 +130,13 @@ function drawTable() {
             .attr("colspan", colSpan)
             .text(groupName);
 
-        // data rows
+        /* ----- DATA ROWS ----- */
         rows.forEach((row, index) => {
 
             const rowId = `${groupId}-r${index + 1}`;
             const tr = tbody.append("tr");
 
-            /* ---- ROW HEADER (name column) ---- */
+            // Row header (name column)
             tr.append("th")
                 .attr("id", rowId)
                 .attr("scope", "row")
@@ -123,7 +144,7 @@ function drawTable() {
                 .attr("class", "col--text")
                 .text(row[nameColumn]);
 
-            /* ---- VALUE CELLS ---- */
+            // Data cells
             tr.selectAll("td")
                 .data(valueColumns.map((col, i) => ({
                     col,
@@ -141,10 +162,13 @@ function drawTable() {
                 .text(d => d.value);
         });
     }
+
+    /* Source under table */
+    addSource("source", config.sourceText);
 }
 
 /* =========================================================
-   LOAD DATA
+   LOAD DATA AND RENDER
    ========================================================= */
 d3.csv(config.graphicDataURL).then(rawData => {
     tableData = rawData.map(d => ({ ...d }));
