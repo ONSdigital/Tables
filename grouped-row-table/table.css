@@ -1,0 +1,66 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: sans-serif;
+}
+
+/* full‑width thick header line */
+thead tr {
+    border-bottom: 3px solid #666;
+}
+
+thead th,
+thead td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+
+tbody th,
+tbody td {
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid #ddd;
+}
+
+/* group header rows */
+tbody th[scope="colgroup"] {
+    text-align: left;
+    font-weight: bold;
+    padding-top: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+/* row header cells */
+tbody th[scope="row"] {
+    font-weight: normal;
+}
+
+/* alignment */
+.col--text,
+.col--date {
+    text-align: left;
+}
+
+.col--number {
+    text-align: right;
+}
+
+/* ------------------------------------------------------------
+   Caption styled like an H3
+   ------------------------------------------------------------ */
+caption, .table-title {
+    font-size: 1.17em; 
+    font-weight: bold; 
+    margin-bottom: 0.75rem; 
+    text-align: left;    
+    font-family: "Open Sans", sans-serif;
+    font-feature-settings: "salt" 1;
+}
+
+
+/* subtitle underneath */
+caption .table-subtitle {
+    font-size: 1em;
+    font-weight: normal;
+    margin-bottom: 0.75rem;  
+    text-align: left;
+}
