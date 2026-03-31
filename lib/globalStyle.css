@@ -1,0 +1,725 @@
+:root {
+  --ons-color-black: #222;
+  --ons-color-grey-100: #414042;
+  --ons-color-grey-75: #707071;
+  --ons-color-grey-60: #8d8c8e;
+  --ons-color-grey-50: #a09fa0;
+  --ons-color-grey-40: #b3b3b3;
+  --ons-color-grey-35: #bcbcbd;
+  --ons-color-grey-25: #d5d5d6;
+  --ons-color-grey-20: #d9d9d9;
+  --ons-color-grey-15: #e2e2e3;
+  --ons-color-grey-10: #efeff0;
+  --ons-color-grey-5: #f5f5f6;
+  --ons-color-white: #fff;
+  --ons-color-ocean-blue: #206095;
+  --ons-color-sky-blue: #27a0cc;
+  --ons-color-night-blue: #003c57;
+  --ons-color-emerald-green: #118c7b;
+  --ons-color-spring-green: #a8bd3a;
+  --ons-color-spring-green-dark: #8a9b2e;
+  --ons-color-beetroot-purple: #871A5B;
+  --ons-color-coral-pink: #F66068;
+  --ons-color-lavendar-purple: #746cb1;
+  --ons-color-mint-green: #22d0b6;
+  --ons-color-mint-green-dark: #1aa590;
+  --ons-color-highlight-orange: #f39431;
+  --ons-color-highlight-orange-dark: #f56927;
+  --ons-color-dark-leaf-green: #005253;
+  --ons-color-aqua-teal: #00a3a6;
+  --ons-color-navy-blue: #194766;
+  --ons-color-pale-blue: #e7eff4;
+  --ons-color-soft-blue-grey: #dee7ee;
+  --ons-color-light-blue-grey: #e9eff4;
+  --ons-color-leaf-green: #0f8243;
+  --ons-color-leaf-green-dark-5: #0c6b37;
+  --ons-color-ruby-red: #d0021b;
+  --ons-color-jaffa-orange: #fa6401;
+  --ons-color-sun-yellow: #fbc900;
+  --ons-color-neon-yellow: #f0f762;
+  --ons-color-branded: var(--ons-color-ocean-blue);
+  --ons-color-branded-text: var(--ons-color-ocean-blue);
+  --ons-color-branded-tint: var(--ons-color-ocean-blue-tint);
+  --ons-color-branded-secondary: var(--ons-color-night-blue);
+  --ons-color-branded-tertiary: var(--ons-color-aqua-teal);
+  --ons-color-branded-supporting: var(--ons-color-spring-green);
+  --ons-color-branded-supporting-tint: var(--ons-color-branded-supporting);
+  --ons-color-header: var(--ons-color-branded);
+  --ons-color-header-neutral: var(--ons-color-grey-75);
+  --ons-color-header-masthead: var(--ons-color-white);
+  --ons-color-header-masthead-internal: var(--ons-color-branded-secondary);
+  --ons-color-header-masthead-neutral: var(--ons-color-black);
+  --ons-color-header-title: var(--ons-color-text);
+  --ons-color-header-navigation-links: var(--ons-color-text);
+  --ons-color-service-links: var(--ons-color-white);
+  --ons-color-cta-bg: var(--ons-color-branded-tint);
+  --ons-color-banner-bg: var(--ons-color-grey-5);
+  --ons-color-banner-bg-dark: var(--ons-color-grey-15);
+  --ons-color-page-light: var(--ons-color-white);
+  --ons-color-banner-browser-bg: var(--ons-color-black);
+  --ons-color-hero-bg: var(--ons-color-branded-tint);
+  --ons-color-hero-bg-dark: var(--ons-color-branded);
+  --ons-color-text: var(--ons-color-black);
+  --ons-color-text-light: var(--ons-color-grey-75);
+  --ons-color-text-inverse: var(--ons-color-white);
+  --ons-color-text-banner: var(--ons-color-black);
+  --ons-color-text-link: var(--ons-color-ocean-blue);
+  --ons-color-text-link-hover: var(--ons-color-night-blue);
+  --ons-color-text-link-active: var(--ons-color-night-blue);
+  --ons-color-text-link-focus: var(--ons-color-black);
+  --ons-color-text-inverse-link: var(--ons-color-white);
+  --ons-color-text-inverse-link-hover: var(--ons-color-grey-5);
+  --ons-color-text-banner-link: var(--ons-color-grey-100);
+  --ons-color-text-banner-link-hover: var(--ons-color-black);
+  --ons-color-text-metadata: var(--ons-color-black);
+  --ons-color-focus: var(--ons-color-sun-yellow);
+  --ons-color-focus-dark: var(--ons-color-sun-yellow-dark);
+  --ons-color-highlight: var(--ons-color-neon-yellow);
+  --ons-color-borders: var(--ons-color-grey-75);
+  --ons-color-borders-indent: var(--ons-color-grey-35);
+  --ons-color-borders-light: var(--ons-color-grey-35);
+  --ons-color-borders-document-image: var(--ons-color-grey-15);
+  --ons-color-borders-document-image-focus: var(--ons-color-black);
+  --ons-color-placeholder: var(--ons-color-grey-75);
+  --ons-color-button: var(--ons-color-leaf-green);
+  --ons-color-button-secondary: var(--ons-color-grey-15);
+  --ons-color-button-shadow: var(--ons-color-leaf-green-dark-10);
+  --ons-color-button-hover: var(--ons-color-leaf-green-dark-5);
+  --ons-color-button-secondary-shadow: var(--ons-color-grey-75);
+  --ons-color-button-secondary-hover: var(--ons-color-grey-25);
+  --ons-color-input-border: var(--ons-color-black);
+  --ons-color-input-bg: var(--ons-color-white);
+  --ons-color-info: var(--ons-color-ocean-blue);
+  --ons-color-info-tint: var(--ons-color-ocean-blue-tint);
+  --ons-color-info-vibrant: var(--ons-color-ocean-blue-vibrant);
+  --ons-color-success: var(--ons-color-leaf-green);
+  --ons-color-success-tint: var(--ons-color-leaf-green-tint);
+  --ons-color-success-vibrant: var(--ons-color-leaf-green-vibrant);
+  --ons-color-errors: var(--ons-color-ruby-red);
+  --ons-color-errors-tint: var(--ons-color-ruby-red-tint);
+  --ons-color-errors-vibrant: var(--ons-color-ruby-red-vibrant);
+  --ons-color-pending: var(--ons-color-jaffa-orange);
+  --ons-color-pending-tint: var(--ons-color-jaffa-orange-tint);
+  --ons-color-pending-vibrant: var(--ons-color-jaffa-orange-vibrant);
+  --ons-color-dead: var(--ons-color-grey-75);
+  --ons-color-instruction: var(--ons-color-jaffa-orange);
+  --ons-color-instruction-tint: var(--ons-color-jaffa-orange-tint);
+  --ons-color-text-disabled: var(--ons-color-grey-35);
+  --ons-color-border-disabled: var(--ons-color-grey-35);
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+input,
+select,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  /* margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; */
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  /* prevent font scaling in landscape */
+}
+
+body {
+  font-family: "Open Sans", sans-serif;
+  font-feature-settings: "salt" 1;
+  font-weight: 400;
+  max-width: 700px;
+  margin: 0px auto;
+  padding-bottom: 10px;
+}
+
+text {
+  font-family: "Open Sans", sans-serif;
+  font-feature-settings: "salt" 1;
+  font-weight: 400;
+  forced-color-adjust: auto;
+}
+
+/* small multiple specific styles */
+text.title {
+  font-weight: 600;
+  font-size: 14px;
+  fill: var(--ons-color-grey-100);
+}
+
+.grid line {
+  stroke: var(--ons-color-grey-20);;
+}
+
+.chart-container {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.chart-container:last-child {
+  margin-right: 0;
+}
+
+.grid path.domain {
+  display: none;
+}
+
+/* title for sub-groups in charts with groups */
+.groupLabels {
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  fill: var(--ons-color-grey-100);
+}
+
+svg.chart:focus-visible {
+  box-shadow: 0 0 0 2px var(--ons-color-black),
+    0 0 0 5px var(--ons-color-sun-yellow);
+}
+
+.chart-keyboard-instruction {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--ons-color-grey-75);
+}
+
+/* axis tick labels */
+svg.chart g.axis text
+
+/* sets all tick text as grey 100 */ {
+  font-size: 14px;
+  fill: var(--ons-color-grey-100);
+}
+
+/* overwrites x-axis as grey 75 */
+svg.chart g.x.axis text {
+  fill: var(--ons-color-grey-75);
+}
+
+/* if axis has class numeric, make it grey75 */
+svg.chart g.axis.numeric text {
+  fill: var(--ons-color-grey-75);
+}
+
+/* if axis has class categorical, make it grey100 */
+svg.chart g.axis.categorical text {
+  fill: var(--ons-color-grey-100);
+}
+
+/* this sets the labels for the axis */
+.axis--label {
+  font-size: 14px;
+  fill: var(--ons-color-grey-75);
+}
+
+/* do not show the line that runs the domain of the axis */
+svg.chart g.axis path.domain {
+  display: none;
+}
+
+/* this sets the ticks */
+svg.chart .axis line {
+  stroke: var(--ons-color-grey-20);
+}
+
+/* this sets zero line */
+
+g.tick line.zero-line {
+  stroke: var(--ons-color-grey-40);
+  stroke-width: 2px;
+}
+
+/* guidelines for dot plots and similar */
+.guideline {
+  stroke: var(--ons-color-grey-20);
+  stroke-width: 1px;
+  stroke-dasharray: 2 2;
+}
+
+/* this sets the style for lines charts */
+path.line {
+  fill: none;
+}
+
+.directLineLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/*this sets the style for */
+
+/* source */
+h5#source {
+  font-size: 16px;
+  margin: 16px 0 8px 0;
+  font-weight: 400;
+  color: var(--ons-color-grey-75);
+}
+
+/* legend div */
+#legend {
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 10px;
+}
+
+.legend--item {
+  display: flex;
+  padding-right: 40px;
+  padding-bottom: 12px;
+}
+
+/* Stroke styling for legend shapes and line end markers */
+.legend--icon circle,
+.legend--icon rect,
+.legend--icon path {
+  stroke-width: 2.5;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 10;
+}
+
+.line-end,
+g.line-end path {
+  stroke-width: 2.5;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-miterlimit: 10;
+}
+
+.legend--icon--circle {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  align-self: center;
+  flex-shrink: 0;
+  forced-color-adjust: none;
+}
+
+/* a legend circle with a border for scatterplots */
+
+.legend--icon--circle2 {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  align-self: center;
+  flex-shrink: 0;
+  border: 2px solid;
+  forced-color-adjust: none;
+}
+
+.legend--icon--refline {
+  height: 3px;
+  width: 20px;
+  align-self: center;
+  flex-shrink: 0;
+  forced-color-adjust: none;
+}
+
+.legend--text {
+  color: var(--ons-color-grey-75);
+  line-height: 14px;
+  font-size: 14px;
+  padding-left: 6px;
+  margin: 0;
+}
+
+.dataLabels {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@media (max-width: 400px) {
+  #legend {
+    flex-flow: column;
+  }
+
+  .legend--item {
+    padding-bottom: 8px;
+  }
+}
+
+/*styles for annotation added with the annotation.js script*/
+.annotation_arrow {
+  fill: none;
+  stroke: var(--ons-color-grey-100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1px;
+  opacity: 0.9;
+}
+
+.annotation-text {
+  fill: var(--ons-color-grey-100);
+  color: var(--ons-color-grey-100);
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+
+.annotation-line {
+  stroke: var(--ons-color-grey-40);
+  stroke-width: 2px;
+  stroke-dasharray: 4 4;
+}
+
+.annotation-range {
+  fill: var(--ons-color-grey-10);
+  stroke-width: 2px;
+  stroke-dasharray: 4 4;
+}
+
+.direction-arrow,
+.elbow-arrow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2px;
+}
+
+.mobile-annotation-circle {
+  stroke: var(--ons-color-grey-100);
+  stroke-width: 1px;
+  fill: var(--ons-color-white);
+}
+
+.mobile-annotation-circle-text {
+  fill: var(--ons-color-grey-100);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.mobile-annotation-footnote-row {
+  padding-bottom: 3px;
+}
+
+/* Adjusted colours for high-contrast mode */
+@media (forced-colors: active) {
+  .annotation_arrow {
+    stroke: var(--ons-color-grey-20);
+  }
+
+  .annotation-line {
+    stroke: var(--ons-color-grey-20);
+  }
+
+  .annotation-range {
+    fill: var(--ons-color-grey-75);
+  }
+
+  .direction-arrow {
+    stroke: var(--ons-color-grey-20);
+  }
+}
+
+/* for content that needs to be visible to a screenreader but invisible and take no space for users viewing the chart */
+.visuallyhidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* Annotations */
+#annotation-toolbar fieldset {
+  border: 1px solid var(--ons-color-ocean-blue);
+  border-radius: 0.75rem;
+  margin-bottom: 0.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+#annotation-toolbar fieldset legend {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ons-color-night-blue);
+  padding: 0 0.5rem;
+}
+
+#annotation-toolbar .options-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
+
+#annotation-toolbar .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+#annotation-toolbar .option-icon svg{
+  stroke: var(--ons-color-grey-75);
+}
+
+/* 2. Style the visual card (the <label>) */
+#annotation-toolbar .option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+  text-align: center;
+  height:100%;
+}
+
+#annotation-toolbar .option-card span {
+  font-size: 0.875rem;
+  color: var(--ons-color-grey-100);
+}
+
+/* 3. Hover State */
+#annotation-toolbar .option-card:hover {
+  border-color: var(--ons-color-night-blue);
+  background-color: var(--ons-color-sky-blue);
+}
+
+/* 4. Checked State (Uses the adjacent sibling selector) */
+/* Select the label (.option-card) when the hidden input before it is checked */
+#annotation-toolbar input[type="radio"]:checked~.option-card {
+  background-color: var(--ons-color-spring-green);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Style the text and icon when the card is checked */
+#annotation-toolbar input[type="radio"]:checked~.option-card span {
+  color: var(--ons-color-white);
+}
+
+#annotation-toolbar input[type="radio"]:checked~.option-card .option-icon svg{
+  stroke: var(--ons-color-white);
+}
+
+
+/* Button Styling */
+.ons-btn{
+  background:rgba(0,0,0,0);
+  border:0;
+  border-radius:0;
+  cursor:pointer;
+  display:inline-block;
+  font-family:inherit;
+  margin:0;
+  padding:0;
+  position:relative;
+  text-align:center;
+  text-decoration:none;
+  text-rendering:optimizelegibility;
+  vertical-align:top;
+  white-space:nowrap
+}
+
+#annotation-toolbar .ons-btn::after{
+  border:0.1875em solid rgba(0,0,0,0);
+  inset:0 0-0.1875em 0;
+  content:"";
+  position:absolute
+}
+
+.ons-btn+.ons-btn{
+  margin-left:.5rem
+}
+
+.ons-btn:focus,
+.ons-btn:focus-visible{
+  outline:3px solid rgba(0,0,0,0); /* Sets up the focus outline */
+  outline-offset:1px
+}
+
+.ons-btn:focus .ons-btn__inner{
+  background:var(--ons-color-focus);
+  box-shadow:0 0.1875em 0 var(--ons-color-text-link-focus);
+  color:var(--ons-color-text-link-focus)
+}
+
+.ons-btn:focus .ons-btn__inner .ons-icon{
+  fill:var(--ons-color-text-link-focus)
+}
+
+.ons-btn:focus:hover:not(:active,.active) .ons-btn__inner{
+  background:var(--ons-color-focus-dark)
+}
+
+.ons-btn:hover .ons-btn__inner{
+  background:var(--ons-color-button-hover)
+}
+
+.ons-btn__inner{
+  background:var(--ons-color-button);
+  border-radius:3px;
+  box-shadow:0 0.1875rem 0 var(--ons-color-button-shadow);
+  color:var(--ons-color-text-inverse);
+  display:flex;
+  align-items:center;
+  padding:.75rem 1rem;
+  pointer-events:none;
+  position:relative
+}
+
+.ons-btn__inner .ons-icon{
+  fill:var(--ons-color-text-inverse);
+  height:18px;
+  width:18px
+}
+
+.ons-btn:active .ons-btn__inner,
+.ons-btn:active:focus .ons-btn__inner,
+.ons-btn.active .ons-btn__inner,
+.ons-btn.active:focus .ons-btn__inner{
+  background:var(--ons-color-button);
+  box-shadow:none;
+  color:var(--ons-color-text-inverse)
+}
+
+.ons-btn:active .ons-btn__inner .ons-icon,
+.ons-btn:active:focus .ons-btn__inner .ons-icon,
+.ons-btn.active .ons-btn__inner .ons-icon,
+.ons-btn.active:focus .ons-btn__inner .ons-icon{
+  fill:var(--ons-color-text-inverse)
+}
+
+.ons-btn:active,
+.ons-btn.active{
+  top:0.1875em /* This is the physical shift */
+}
+
+.ons-btn--text-link{
+  vertical-align:baseline
+}
+
+.ons-btn--text-link .ons-btn__inner{
+  background:rgba(0,0,0,0);
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  color:var(--ons-color-text-link);
+  font-weight:400;
+  padding:0
+}
+
+.ons-btn--text-link .ons-btn__inner .ons-icon{
+  fill:var(--ons-color-text-link)
+}
+
+/* Hover and Active/Pressed States */
+.ons-btn--text-link:hover .ons-btn__inner,
+.ons-btn--text-link:active .ons-btn__inner,
+.ons-btn--text-link.active .ons-btn__inner{
+  background:none;
+  color:var(--ons-color-text-link-hover)
+}
+
+.ons-btn--text-link:focus:hover .ons-btn__inner{
+  color:var(--ons-color-black)
+}
+
+/* Focus State */
+.ons-btn--text-link:focus .ons-btn__inner,
+.ons-btn--text-link:active:focus .ons-btn__inner,
+.ons-btn--text-link.active:focus .ons-btn__inner{
+  background-color:var(--ons-color-focus);
+  /* The !important overrides typical button box-shadows */
+  box-shadow:0 -2px var(--ons-color-focus),0 4px var(--ons-color-text-link-focus) !important;
+  color:var(--ons-color-text-link-focus)
+}
+
+/* Icon Focus State */
+.ons-btn--text-link:focus .ons-btn__inner .ons-icon,
+.ons-btn--text-link:active:focus .ons-btn__inner .ons-icon,
+.ons-btn--text-link.active:focus .ons-btn__inner .ons-icon{
+  fill:var(--ons-color-text-link-focus)
+}
