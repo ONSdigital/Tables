@@ -1,5 +1,19 @@
-group,name,Studio,Apartment,Chalet,Villa
-Paris,1 bedroom,11,20,25,23
-Paris,2 bedroom,-,43,52,32
-Rome,1 bedroom,13,21,22,3
-Rome,2 bedroom,-,23,43,30
+group,name,All responses,Proxy,%
+Age,Total (16+),58128,21188,36.5
+Age,16-17,1712,1630,95.2
+Age,18-19,1421,1214,85.4
+Age,20+,54995,18344,33.4
+Sex,Total,58128,21188,36.5
+Sex,Male,27800,11333,40.8
+Sex,Female,30328,9855,32.5
+Ethnicity,Total,58128,21188,36.5
+Ethnicity,White,50435,17866,35.4
+Ethnicity,All Ethnicities Other than White,7665,3309,43.2
+Ethnicity,Refused,28,13,46.4
+Economic activity (INECAC05),Total,58128,21188,36.5
+Economic activity (INECAC05),Employees,30401,11707,38.5
+Economic activity (INECAC05),Self-Employed,5000,1952,39.0
+Economic activity (INECAC05),Government schemes,48,19,39.6
+Economic activity (INECAC05),Unpaid family workers,142,40,28.2
+Economic activity (INECAC05),ILO Unemployed,1573,698,44.4
+Economic activity (INECAC05),Inactive,20964,6772,32.3

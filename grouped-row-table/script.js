@@ -10,8 +10,32 @@ function drawTable() {
 
     container.html("");
 
+    /* ---------------------------------------------
+       NORMALISE COLUMN TYPES + NUMBER FORMATTERS
+       --------------------------------------------- */
+    const colTypes = config.colTypes.split("");
+
+    const numberFormatters = (() => {
+        // single format → apply to all numeric columns
+        if (typeof config.numberFormat === "string") {
+            return colTypes.map(t =>
+                t === "n" ? d3.format(config.numberFormat) : null
+            );
+        }
+
+        // array of formats → per column
+        if (Array.isArray(config.numberFormat)) {
+            return colTypes.map((t, i) => {
+                const fmt = config.numberFormat[i];
+                return (t === "n" && fmt) ? d3.format(fmt) : null;
+            });
+        }
+
+        return [];
+    })();
+
     /* =========================================================
-       TITLE + SUBTITLE (visible, non-scrolling)
+       TITLE + SUBTITLE
        ========================================================= */
     if (config.titleText) {
         container.append("div")
@@ -26,7 +50,7 @@ function drawTable() {
     }
 
     /* =========================================================
-       SCROLL WRAPPER (table scrolls, titles do NOT)
+       SCROLL WRAPPER
        ========================================================= */
     const scrollWrapper = container.append("div")
         .attr("class", "table-scroll")
@@ -35,9 +59,6 @@ function drawTable() {
 
     const table = scrollWrapper.append("table");
 
-    /* =========================================================
-       ACCESSIBLE CAPTION (screen-reader only)
-       ========================================================= */
     table.append("caption")
         .attr("class", "visually-hidden")
         .text(
@@ -46,37 +67,24 @@ function drawTable() {
                 : config.titleText
         );
 
-    /* ---------------------------------------------------------
+    /* =========================================================
        COLUMN STRUCTURE
-       --------------------------------------------------------- */
+       ========================================================= */
     const allColumns = tableData.columns;
     const groupColumn = "group";
-
-    // All non-group columns
-    const dataColumns = allColumns.filter(d => d !== groupColumn);
-
-    // Row header column (name)
+    const dataColumns = allColumns.filter(c => c !== groupColumn);
     const nameColumn = dataColumns[0];
-
-    // The rest are the value columns
     const valueColumns = dataColumns.slice(1);
 
-    // colTypes corresponds ONLY to valueColumns
-    const colTypes = config.colTypes.split("");
-
-    // group rows by group column
     const grouped = d3.group(tableData, d => d[groupColumn]);
 
     /* =========================================================
-       COLGROUP (column widths + alignment)
+       COLGROUP
        ========================================================= */
     const colgroup = table.append("colgroup");
-
-    // First column = row header (name)
     colgroup.append("col").attr("class", "col--text");
 
-    // Value columns
-    valueColumns.forEach((col, i) => {
+    valueColumns.forEach((_, i) => {
         const typeChar = colTypes[i];
         const typeClass =
             typeChar === "n" ? "col--number" :
@@ -87,12 +95,10 @@ function drawTable() {
     });
 
     /* =========================================================
-       THEAD (only value columns!)
+       THEAD
        ========================================================= */
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
-
-    // Blank corner for row headers
     headerRow.append("td");
 
     headerRow.selectAll("th")
@@ -115,14 +121,56 @@ function drawTable() {
        TBODY
        ========================================================= */
     const tbody = table.append("tbody");
+    const colSpan = valueColumns.length + 1;
 
-    const colSpan = valueColumns.length + 1; // name column + N values
+    const ungroupedRows = [...grouped].find(([g]) => !g || g.trim() === "");
+
+    if (ungroupedRows) {
+        const [, rows] = ungroupedRows;
+
+        rows.forEach((row, index) => {
+            const rowId = `ungrouped-r${index + 1}`;
+            const tr = tbody.append("tr");
+
+            tr.append("th")
+                .attr("id", rowId)
+                .attr("scope", "row")
+                .attr("class", "col--text")
+                .text(row[nameColumn]);
+
+            tr.selectAll("td")
+                .data(valueColumns.map((col, i) => ({
+                    col,
+                    value: row[col],
+                    type: colTypes[i],
+                    i
+                })))
+                .enter()
+                .append("td")
+                .attr("headers", d => `${rowId} ${d.col}`)
+                .attr("class", d =>
+                    d.type === "n" ? "col--number" :
+                    d.type === "d" ? "col--date" :
+                    "col--text"
+                )
+                .text(d => {
+                    const raw = (d.value ?? "").toString().trim();
+                    if (raw === "") return config.nullText;
+
+                    if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
+                        return numberFormatters[d.i](+raw);
+                    }
+
+                    return raw;
+                });
+        });
+    }
 
     for (const [groupName, rows] of grouped) {
+        if (!groupName || groupName.trim() === "") continue;
 
         const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
-        /* ----- GROUP HEADER ROW ----- */
         tbody.append("tr")
             .append("th")
             .attr("id", groupId)
@@ -130,13 +178,10 @@ function drawTable() {
             .attr("colspan", colSpan)
             .text(groupName);
 
-        /* ----- DATA ROWS ----- */
         rows.forEach((row, index) => {
-
             const rowId = `${groupId}-r${index + 1}`;
             const tr = tbody.append("tr");
 
-            // Row header (name column)
             tr.append("th")
                 .attr("id", rowId)
                 .attr("scope", "row")
@@ -144,12 +189,12 @@ function drawTable() {
                 .attr("class", "col--text")
                 .text(row[nameColumn]);
 
-            // Data cells
             tr.selectAll("td")
                 .data(valueColumns.map((col, i) => ({
                     col,
                     value: row[col],
-                    type: colTypes[i]
+                    type: colTypes[i],
+                    i
                 })))
                 .enter()
                 .append("td")
@@ -159,11 +204,19 @@ function drawTable() {
                     d.type === "d" ? "col--date" :
                     "col--text"
                 )
-                .text(d => d.value);
+                .text(d => {
+                    const raw = (d.value ?? "").toString().trim();
+                    if (raw === "") return config.nullText;
+
+                    if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
+                        return numberFormatters[d.i](+raw);
+                    }
+
+                    return raw;
+                });
         });
     }
 
-    /* Source under table */
     addSource("source", config.sourceText);
 }
 
