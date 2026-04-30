@@ -1,8 +1,9 @@
 config = {
 	"graphicDataURL": "data.csv",
-	"colTypes": "nnnnnn", // d = date, n = number, t = text,
+	"colTypes": "nnn", // d = date, n = number, t = text (not including group and name)
 	"nullText": "-",
-	"numberFormat": ",.0f", // Or list
+	//"numberFormat": ",.0f",
+	"numberFormat": [",.0f", ",.0f", ",.1f"],
 	"titleText": "Table 7: Proxy response for July to September 2025",
 	"subtitleText": "Great Britain",
 	"sourceText": "Labour Force Survey from the Office for National Statistics",

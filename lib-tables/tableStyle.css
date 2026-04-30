@@ -1,0 +1,24 @@
+/* Screenreader-only caption */
+.visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+}
+
+/* Title + Subtitle */
+.table-title {
+    font-size: 1.17em;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    padding-top: 15px;
+}
+
+.table-subtitle {
+    margin-bottom: 1rem;
+}
