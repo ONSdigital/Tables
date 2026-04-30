@@ -15,13 +15,17 @@ table {
     width: max-content;
     min-width: 100%;
     border-collapse: collapse;
+    table-layout: auto; 
 }
 
-/* Column widths */
-.table-scroll col {
+.table-scroll th,
+.table-scroll td {
     min-width: var(--min-col-width);
     max-width: var(--max-col-width);
+    white-space: normal;     
+    word-break: break-word; 
 }
+
 
 /* Screenreader-only caption */
 .visually-hidden {
@@ -63,6 +67,7 @@ thead td {
 tbody th,
 tbody td {
     padding: 0.45rem 0.75rem;
+    padding-left: 0px;
     border-bottom: 1px solid #ddd;
 }
 
@@ -70,9 +75,15 @@ tbody td {
 tbody th[scope="colgroup"] {
     text-align: left;
     font-weight: bold;
-    padding-top: 1rem;
+    padding-top: 2rem;
     border-bottom: 1px solid #ddd;
 }
+
+
+tbody tr:first-child th[scope="colgroup"] {
+    padding-top: 0.75rem; /* or whatever value you prefer */
+}
+
 
 /* row header cells */
 tbody th[scope="row"] {

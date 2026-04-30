@@ -8,10 +8,14 @@ let tableData;
    ========================================================= */
 function drawTable() {
 
+
+    const numberFormatter = d3.format(config.numberFormat);
+
+
     container.html("");
 
     /* =========================================================
-       TITLE + SUBTITLE (visible, non-scrolling)
+       TITLE + SUBTITLE (visible, not scrolling)
        ========================================================= */
     if (config.titleText) {
         container.append("div")
@@ -26,7 +30,7 @@ function drawTable() {
     }
 
     /* =========================================================
-       SCROLL WRAPPER (table scrolls, titles do NOT)
+       SCROLL WRAPPER
        ========================================================= */
     const scrollWrapper = container.append("div")
         .attr("class", "table-scroll")
@@ -36,7 +40,7 @@ function drawTable() {
     const table = scrollWrapper.append("table");
 
     /* =========================================================
-       ACCESSIBLE CAPTION (screen-reader only)
+       ACCESSIBLE CAPTION (screen readers only)
        ========================================================= */
     table.append("caption")
         .attr("class", "visually-hidden")
@@ -46,53 +50,53 @@ function drawTable() {
                 : config.titleText
         );
 
-    /* ---------------------------------------------------------
+    /* =========================================================
        COLUMN STRUCTURE
-       --------------------------------------------------------- */
+       ========================================================= */
     const allColumns = tableData.columns;
     const groupColumn = "group";
 
     // All non-group columns
-    const dataColumns = allColumns.filter(d => d !== groupColumn);
+    const dataColumns = allColumns.filter(c => c !== groupColumn);
 
-    // Row header column (name)
+    // FIRST column = row header column ("name")
     const nameColumn = dataColumns[0];
 
-    // The rest are the value columns
+    // Remaining = data value columns
     const valueColumns = dataColumns.slice(1);
 
-    // colTypes corresponds ONLY to valueColumns
+    // colTypes corresponds ONLY to valueColumns now
     const colTypes = config.colTypes.split("");
 
-    // group rows by group column
+    // Group rows by group name
     const grouped = d3.group(tableData, d => d[groupColumn]);
 
     /* =========================================================
-       COLGROUP (column widths + alignment)
+       COLGROUP (for width + alignment)
        ========================================================= */
     const colgroup = table.append("colgroup");
 
-    // First column = row header (name)
+    // name column (row header)
     colgroup.append("col").attr("class", "col--text");
 
-    // Value columns
+    // value columns
     valueColumns.forEach((col, i) => {
         const typeChar = colTypes[i];
         const typeClass =
             typeChar === "n" ? "col--number" :
-            typeChar === "d" ? "col--date" :
-            "col--text";
+                typeChar === "d" ? "col--date" :
+                    "col--text";
 
         colgroup.append("col").attr("class", typeClass);
     });
 
     /* =========================================================
-       THEAD (only value columns!)
+       THEAD (ONLY value columns have headers)
        ========================================================= */
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
 
-    // Blank corner for row headers
+    // blank corner for row headers
     headerRow.append("td");
 
     headerRow.selectAll("th")
@@ -106,8 +110,8 @@ function drawTable() {
         .attr("id", d => d.col)
         .attr("class", d =>
             d.type === "n" ? "col--number" :
-            d.type === "d" ? "col--date" :
-            "col--text"
+                d.type === "d" ? "col--date" :
+                    "col--text"
         )
         .text(d => d.col);
 
@@ -116,9 +120,64 @@ function drawTable() {
        ========================================================= */
     const tbody = table.append("tbody");
 
-    const colSpan = valueColumns.length + 1; // name column + N values
+    const colSpan = valueColumns.length + 1; // name column + data columns
 
+    /* =========================================================
+       UNGROUPED ROWS FIRST (group column empty)
+       ========================================================= */
+    const ungroupedRows = [...grouped].find(([g]) => !g || g.trim() === "");
+
+    if (ungroupedRows) {
+        const [_, rows] = ungroupedRows;
+
+        rows.forEach((row, index) => {
+            const rowId = `ungrouped-r${index + 1}`;
+            const tr = tbody.append("tr");
+
+            // row header
+            tr.append("th")
+                .attr("id", rowId)
+                .attr("scope", "row")
+                .attr("class", "col--text")
+                .text(row[nameColumn]);
+
+            // value columns only
+            tr.selectAll("td")
+                .data(valueColumns.map((col, i) => ({
+                    col,
+                    value: row[col],
+                    type: colTypes[i]
+                })))
+                .enter()
+                .append("td")
+                .attr("headers", d => `${rowId} ${d.col}`)
+                .attr("class", d =>
+                    d.type === "n" ? "col--number" :
+                        d.type === "d" ? "col--date" :
+                            "col--text"
+                )
+                .text(d => {
+                    if (d.value === "" || d.value == null) {
+                        return config.nullText;
+                    }
+
+                    // number formatting if type = n
+                    if (d.type === "n") {
+                        return numberFormatter(+d.value);
+                    }
+
+                    // fall back to raw value for text/date
+                    return d.value;
+                });
+        });
+    }
+
+    /* =========================================================
+       GROUPED ROWS (skip empty-group after handling above)
+       ========================================================= */
     for (const [groupName, rows] of grouped) {
+
+        if (!groupName || groupName.trim() === "") continue;
 
         const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
@@ -136,7 +195,7 @@ function drawTable() {
             const rowId = `${groupId}-r${index + 1}`;
             const tr = tbody.append("tr");
 
-            // Row header (name column)
+            // row heading
             tr.append("th")
                 .attr("id", rowId)
                 .attr("scope", "row")
@@ -144,7 +203,7 @@ function drawTable() {
                 .attr("class", "col--text")
                 .text(row[nameColumn]);
 
-            // Data cells
+            // value columns
             tr.selectAll("td")
                 .data(valueColumns.map((col, i) => ({
                     col,
@@ -156,14 +215,33 @@ function drawTable() {
                 .attr("headers", d => `${groupId} ${rowId} ${d.col}`)
                 .attr("class", d =>
                     d.type === "n" ? "col--number" :
-                    d.type === "d" ? "col--date" :
-                    "col--text"
+                        d.type === "d" ? "col--date" :
+                            "col--text"
                 )
-                .text(d => d.value);
+                .text(d => {
+
+                    // NORMALISE FIRST
+                    const raw = (d.value || "").toString().trim();
+
+                    // 1. If empty after trimming → null text
+                    if (raw === "") {
+                        return config.nullText;
+                    }
+
+                    // 2. Numeric formatting ONLY if type is numeric AND raw is a valid number
+                    if (d.type === "n" && !isNaN(raw)) {
+                        return numberFormatter(+raw);
+                    }
+
+                    // 3. Otherwise return raw value
+                    return raw;
+                });
+
+
         });
     }
 
-    /* Source under table */
+    /* Footer source */
     addSource("source", config.sourceText);
 }
 

@@ -1,9 +1,11 @@
 config = {
 	"graphicDataURL": "data.csv",
-	"colTypes": "nnnn", // d = date, n = number, t = text
-	"titleText": "Table 1: Table title goes here",
-	"subtitleText": "Subtitle text",
-	"sourceText": "Office for National Statistics",
+	"colTypes": "nnnnnn", // d = date, n = number, t = text,
+	"nullText": "-",
+	"numberFormat": ",.0f", // Or list
+	"titleText": "Table 7: Proxy response for July to September 2025",
+	"subtitleText": "Great Britain",
+	"sourceText": "Labour Force Survey from the Office for National Statistics",
 	"minColWidth": 40,
-	"maxColWidth": 80
+	"maxColWidth": 180
 }
