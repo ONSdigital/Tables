@@ -4,9 +4,9 @@ config = {
 	"nullText": "-",
 	//"numberFormat": ",.0f",
 	"numberFormat": [",.0f", ",.0f", ",.1f"],
-	"titleText": "Table 7: Proxy response for July to September 2025",
-	"subtitleText": "Great Britain",
-	"sourceText": "Labour Force Survey from the Office for National Statistics",
+	"titleText": "Table 1: Title",
+	"subtitleText": "Subtitle text",
+	"sourceText": "Office for National Statistics",
 	"minColWidth": 40,
 	"maxColWidth": 180
 }
