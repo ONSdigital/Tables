@@ -67,7 +67,9 @@ function drawTable() {
         const typeClass =
             typeChar === "n" ? "col--number" :
                 typeChar === "d" ? "col--date" :
-                    "col--text";
+                    typeChar === "h" ? "col--text" :
+                        "col--text";
+
 
         colgroup.append("col").attr("class", typeClass);
     });
@@ -89,10 +91,11 @@ function drawTable() {
         .append("th")
         .attr("scope", "col")
         .attr("id", d => d.col)
+
         .attr("class", d =>
             d.type === "n" ? "col--number" :
                 d.type === "d" ? "col--date" :
-                    "col--text"
+                    "col--text" // includes "h"
         )
         .text(d => d.col);
 
@@ -111,7 +114,8 @@ function drawTable() {
             .attr("class", "col--text")
             .text(row[nameColumn]);
 
-        tr.selectAll("td")
+
+        const cells = tr.selectAll("td")
             .data(valueColumns.map((col, i) => ({
                 col,
                 value: row[col],
@@ -124,18 +128,35 @@ function drawTable() {
             .attr("class", d =>
                 d.type === "n" ? "col--number" :
                     d.type === "d" ? "col--date" :
-                        "col--text"
-            )
-            .text(d => {
-                const raw = (d.value ?? "").toString().trim();
-                if (raw === "") return config.nullText;
+                        "col--text" // includes "h"
+            );
 
-                if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
-                    return numberFormatters[d.i](+raw);
-                }
+        cells.each(function (d) {
+            const cell = d3.select(this);
+            const raw = (d.value ?? "").toString().trim();
 
-                return raw;
-            });
+            if (raw === "") {
+                cell.text(config.nullText);
+                return;
+            }
+
+            // HTML column
+            if (d.type === "h") {
+                cell.html(raw);
+                return;
+            }
+
+            // Number formatting
+            if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
+                cell.text(numberFormatters[d.i](+raw));
+                return;
+            }
+
+            // Default text
+            cell.text(raw);
+        });
+
+
     });
 
     addSource("source", config.sourceText);

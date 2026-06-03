@@ -1,8 +1,8 @@
-name,Category,Description
-Item 1,"High","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-Item 2,"Medium","Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-Item 3,"High","Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-Item 4,"Low","Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-Item 5,"High","Ut hendrerit semper vel class aptent taciti sociosqu."
-Item 6,"Medium","Ad litora torquent per conubia nostra inceptos himenaeos."
-Item 7,"Medium","Quisque faucibus ex sapien vitae pellentesque sem placerat."
+name,Quality,Level,Description
+Item 1,High,High,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+Item 2,Medium,Medium,"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+Item 3,High,High,Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Item 4,Low,Very Low,"Excepteur sint<sup>Superscript</sup> occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+Item 5,High,High,Ut hendrerit semper vel class aptent taciti sociosqu.
+Item 6,Medium,Medium,Ad litora torquent per conubia nostra inceptos himenaeos.
+Item 7,Medium,Medium,Quisque faucibus ex sapien vitae pellentesque sem placerat.

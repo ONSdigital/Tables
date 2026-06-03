@@ -11,7 +11,11 @@ function drawTable() {
 
     container.html("");
 
-    const categoryColumn = config.categoryColumn;
+    const categoryColumn = config.iconColumn;
+    const categoryColumns = Array.isArray(categoryColumn)
+        ? categoryColumn
+        : [categoryColumn];
+
     const legendMode = config.legend ?? "auto";
 
     let categoryScale = null;
@@ -24,8 +28,14 @@ function drawTable() {
     if (categoryColumn) {
 
         const rawCategories = Array.from(
-            new Set(tableData.map(d => (d[categoryColumn] ?? "").toString().trim()))
-        ).filter(d => d !== "");
+            new Set(
+                tableData.flatMap(d =>
+                    categoryColumns
+                        .map(col => (d[col] ?? "").toString().trim())
+                        .filter(v => v !== "")
+                )
+            )
+        );
 
         if (legendMode === "custom" && Array.isArray(config.legendText)) {
             legendItemsData = config.legendText;
@@ -37,8 +47,9 @@ function drawTable() {
 
         categoryScale = d3.scaleOrdinal()
             .domain(categories)
-            .range(config.colourPalette || d3.schemeTableau10);
+            .range(config.colourPalette);
     }
+
 
     /* ---------------------------------------------
        NORMALISE COLUMN TYPES + NUMBER FORMATTERS
@@ -130,8 +141,9 @@ function drawTable() {
         const typeChar = colTypes[i];
         const typeClass =
             typeChar === "n" ? "col--number" :
-            typeChar === "d" ? "col--date" :
-            "col--text";
+                typeChar === "d" ? "col--date" :
+                    typeChar === "h" ? "col--text" :
+                        "col--text";
 
         colgroup.append("col").attr("class", typeClass);
     });
@@ -144,7 +156,7 @@ function drawTable() {
 
     headerRow
         .append("td");
-     
+
     headerRow.selectAll("th")
         .data(valueColumns.map((col, i) => ({
             col,
@@ -156,8 +168,8 @@ function drawTable() {
         .attr("id", d => d.col)
         .attr("class", d =>
             d.type === "n" ? "col--number" :
-            d.type === "d" ? "col--date" :
-            "col--text"
+                d.type === "d" ? "col--date" :
+                    "col--text"
         )
         .text(d => d.col);
 
@@ -188,8 +200,8 @@ function drawTable() {
             .attr("headers", d => `${rowId} ${d.col}`)
             .attr("class", d =>
                 d.type === "n" ? "col--number" :
-                d.type === "d" ? "col--date" :
-                "col--text"
+                    d.type === "d" ? "col--date" :
+                        "col--text"
             )
             .each(function (d) {
 
@@ -201,7 +213,7 @@ function drawTable() {
                     return;
                 }
 
-                if (categoryColumn && d.col === categoryColumn) {
+                if (categoryColumn && categoryColumns.includes(d.col)) {
 
                     const wrapper = cell.append("span")
                         .style("display", "inline-flex")
@@ -220,6 +232,13 @@ function drawTable() {
 
                     return;
                 }
+
+                if (d.type === "h") {
+                    cell.html(raw);
+                    return;
+                }
+
+
 
                 if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
                     cell.text(numberFormatters[d.i](+raw));

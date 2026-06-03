@@ -1,6 +1,6 @@
 config = {
 	"graphicDataURL": "data.csv",
-	"colTypes": "nnn", // d = date, n = number, t = text (not including group and name)
+	"colTypes": "nnnh", // d = date, n = number, t = text, h = html (not including name)
 	"nullText": "-",
 	//"numberFormat": ",.0f",
 	"numberFormat": [",.0f", ",.0f", ",.1f"],

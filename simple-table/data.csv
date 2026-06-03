@@ -1,5 +1,5 @@
-name,All responses,Proxy,%
-Age 16+,58128,21188,36.5
-Sex,58128,21188,36.5
-Ethnicity,58128,21188,36.5
-Economic activity,58128,21188,36.5
+name,All responses,Proxy,%,Notes
+Total,58128,21188,36.5,All adults age <b>16+</b>
+16-17,1712,1630,95.2,
+18-19,1421,1214,85.4,
+20+,54995,18344,33.4,
