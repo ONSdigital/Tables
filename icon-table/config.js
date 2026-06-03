@@ -1,6 +1,6 @@
 config = {
 	"graphicDataURL": "data.csv",
-	"colTypes": "tt", // d = date, n = number, t = text (not including group and name)
+	"colTypes": "th", // d = date, n = number, t = text, h = html (not including name)
 	"categoryColumn": "Category",
 	"circleRadius": 14, // diameter of circle in px
 	"colourPalette": ONSpalette,

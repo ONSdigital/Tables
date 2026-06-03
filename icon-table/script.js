@@ -130,8 +130,9 @@ function drawTable() {
         const typeChar = colTypes[i];
         const typeClass =
             typeChar === "n" ? "col--number" :
-            typeChar === "d" ? "col--date" :
-            "col--text";
+                typeChar === "d" ? "col--date" :
+                    typeChar === "h" ? "col--text" :
+                        "col--text";
 
         colgroup.append("col").attr("class", typeClass);
     });
@@ -144,7 +145,7 @@ function drawTable() {
 
     headerRow
         .append("td");
-     
+
     headerRow.selectAll("th")
         .data(valueColumns.map((col, i) => ({
             col,
@@ -156,8 +157,8 @@ function drawTable() {
         .attr("id", d => d.col)
         .attr("class", d =>
             d.type === "n" ? "col--number" :
-            d.type === "d" ? "col--date" :
-            "col--text"
+                d.type === "d" ? "col--date" :
+                    "col--text"
         )
         .text(d => d.col);
 
@@ -188,8 +189,8 @@ function drawTable() {
             .attr("headers", d => `${rowId} ${d.col}`)
             .attr("class", d =>
                 d.type === "n" ? "col--number" :
-                d.type === "d" ? "col--date" :
-                "col--text"
+                    d.type === "d" ? "col--date" :
+                        "col--text"
             )
             .each(function (d) {
 
@@ -220,6 +221,13 @@ function drawTable() {
 
                     return;
                 }
+
+                if (d.type === "h") {
+                    cell.html(raw);
+                    return;
+                }
+
+
 
                 if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
                     cell.text(numberFormatters[d.i](+raw));

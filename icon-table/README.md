@@ -7,7 +7,7 @@ A table where one column has icons before the category labels.
 * `graphicDataURL`: the file path to the data.
     * the first column must be called `name` and provides the row headers.  
     * the remaining columns contain the table data.
-* `colTypes`: character string defining the column types (excluding the `name` column), e.g. `"nnnn"` where `d = date`, `n = number`, and `t = text`.  
+* `colTypes`: character string defining the column types (excluding the `name` column), e.g. `"nnnn"` where `d = date`, `n = number`, `t = text`, and `h = html`.  
     * this controls alignment and formatting for each column.  
     * the order must match the data columns exactly.
 * `categoryColumn`: the name of the column that contains category values.  
@@ -31,8 +31,8 @@ A table where one column has icons before the category labels.
 * `numberFormat`: defines how numeric columns are formatted.  
     * can be a single format string (applied to all numeric columns), or  
     * an array of format strings matching each column in `colTypes`.
-* `titleText`: the text that should appear in the title (including table number).
-* `subtitleText`: the (optional) text that should appear in the subtitle.
+* `tableDescription`: Table description to be added to caption.
 * `sourceText`: the source text (not including *Source: *).
 * `minColWidth`: minimum column width in pixels, across all columns.
+* `maxColWidth`: maximum column width in pixels, across all columns.
 

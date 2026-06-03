@@ -1,6 +1,6 @@
-# Grouped Row Table
+# Simple Table
 
-A table where rows are grouped together into categories.
+A table with rows and columns.
 
 ## Config options
 
@@ -8,9 +8,12 @@ A table where rows are grouped together into categories.
     * the first column should be called `group` and provides the row group variables.
     * the second column should be called `name` and provides the (nested) row headers.
     * the remaining columns are the data columns.
-* `colTypes`: character string defining the column types e.g. `"nnnn"` where `d = date`, `n = number`, and `t = text`. The `group` and `name` columns are not included here as they are always left aligned.
-* `titleText`: the text that should appear in the title (including table number).
-*  `subtitleText`: the (optional) text that should appear in the subtitle.
+* `colTypes`: character string defining the column types e.g. `"nnnn"` where `d = date`, `n = number`,  `t = text`, and `h = html`. The `name` column is not included here as it is always left aligned.
+* `nullText`: the text to display for empty or missing values.
+* `numberFormat`: defines how numeric columns are formatted.  
+    * can be a single format string (applied to all numeric columns), or  
+    * an array of format strings matching each column in `colTypes`.
+* `tableDescription`: Table description to be added to caption.
 * `sourceText`: the source text (not including *Source: *).
 * `minColWidth`: minimum column width in pixels, across all columns.
 * `maxColWidth`: maximum column width in pixels, across all columns.
