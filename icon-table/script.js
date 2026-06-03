@@ -11,7 +11,7 @@ function drawTable() {
 
     container.html("");
 
-    const categoryColumn = config.categoryColumn;
+    const categoryColumn = config.iconColumn;
     const categoryColumns = Array.isArray(categoryColumn)
         ? categoryColumn
         : [categoryColumn];

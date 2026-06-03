@@ -10,7 +10,7 @@ A table where one column has icons before the category labels.
 * `colTypes`: character string defining the column types (excluding the `name` column), e.g. `"nnnn"` where `d = date`, `n = number`, `t = text`, and `h = html`.  
     * this controls alignment and formatting for each column.  
     * the order must match the data columns exactly.
-* `categoryColumn`: the name of the column that contains category values.  
+* `iconColumn`: the name of the column that contains category values.  
     * this column will display a coloured circle alongside the text.  
     * values in this column are used to generate the colour scale and legend (if enabled).
 * `circleRadius`: diameter of the category indicator circle in pixels.  

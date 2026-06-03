@@ -1,7 +1,7 @@
 config = {
 	"graphicDataURL": "data.csv",
 	"colTypes": "tth", // d = date, n = number, t = text, h = html (not including name)
-	"categoryColumn": ["Quality", "Level"],
+	"iconColumn": ["Quality", "Level"],
 	"circleRadius": 14, // diameter of circle in px
 	"colourPalette": ONSpalette,
 	"legend": "custom", // false = no legend, "auto" for just category names
