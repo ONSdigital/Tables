@@ -36,21 +36,6 @@ function drawTable() {
     })();
 
     /* =========================================================
-       TITLE + SUBTITLE
-       ========================================================= */
-    if (config.titleText) {
-        container.append("div")
-            .attr("class", "table-title")
-            .text(config.titleText);
-    }
-
-    if (config.subtitleText) {
-        container.append("div")
-            .attr("class", "table-subtitle")
-            .text(config.subtitleText);
-    }
-
-    /* =========================================================
        SCROLL WRAPPER
        ========================================================= */
     const scrollWrapper = container.append("div")
@@ -62,11 +47,7 @@ function drawTable() {
 
     table.append("caption")
         .attr("class", "visually-hidden")
-        .text(
-            config.subtitleText
-                ? `${config.titleText} – ${config.subtitleText}`
-                : config.titleText
-        );
+        .text(config.tableDescription);
 
     /* =========================================================
        COLUMN STRUCTURE
