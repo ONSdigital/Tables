@@ -80,24 +80,36 @@ function drawTable() {
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
 
-    headerRow.append("td"); // empty corner cell
-
-    headerRow.selectAll("th")
-        .data(valueColumns.map((col, i) => ({
-            col,
-            type: colTypes[i]
-        })))
-        .enter()
-        .append("th")
+    const corner = headerRow.append("th")
         .attr("scope", "col")
-        .attr("id", d => d.col)
+        .attr("class", "col--text corner-cell")
+        .attr("id", "corner");
 
-        .attr("class", d =>
+
+    if (config.firstColHeader) {
+        corner.text(config.firstColHeader);
+    }
+
+
+    
+headerRow.selectAll("th.data-col")
+    .data(valueColumns.map((col, i) => ({
+        col,
+        type: colTypes[i]
+    })))
+    .enter()
+    .append("th")
+    .attr("scope", "col")
+    .attr("id", d => d.col)
+    .attr("class", d =>
+        "data-col " + (
             d.type === "n" ? "col--number" :
-                d.type === "d" ? "col--date" :
-                    "col--text" // includes "h"
+            d.type === "d" ? "col--date" :
+            "col--text"
         )
-        .text(d => d.col);
+    )
+    .text(d => d.col);
+
 
     /* =========================================================
        TBODY

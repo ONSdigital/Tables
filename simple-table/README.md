@@ -10,6 +10,7 @@ A table with rows and columns.
     * the remaining columns are the data columns.
 * `colTypes`: character string defining the column types e.g. `"nnnn"` where `d = date`, `n = number`,  `t = text`, and `h = html`. The `name` column is not included here as it is always left aligned.
 * `nullText`: the text to display for empty or missing values.
+* `firstColHeader`: the label to place in the top left cell. `null` by default since most category names don't need a label.
 * `numberFormat`: defines how numeric columns are formatted.  
     * can be a single format string (applied to all numeric columns), or  
     * an array of format strings matching each column in `colTypes`.
