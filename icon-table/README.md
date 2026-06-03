@@ -28,6 +28,7 @@ A table where one column has icons before the category labels.
         * `description`: optional explanatory text  
     * the order of this array controls the legend order.
 * `nullText`: the text to display for empty or missing values.
+* `firstColHeader`: the label to place in the top left cell. `null` by default since most category names don't need a label.
 * `numberFormat`: defines how numeric columns are formatted.  
     * can be a single format string (applied to all numeric columns), or  
     * an array of format strings matching each column in `colTypes`.
