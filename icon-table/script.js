@@ -102,7 +102,7 @@ function drawTable() {
             .text(d => {
                 if (legendMode === "custom") {
                     return d.description
-                        ? `${d.value}: ${d.description}`
+                        ? `${d.value}${d.description}`
                         : d.value;
                 }
                 return d;

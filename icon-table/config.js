@@ -6,10 +6,10 @@ config = {
 	"colourPalette": ONSpalette,
 	"legend": "custom", // false = no legend, "auto" for just category names
 	"legendText": [
-		{ value: "Very Low", description: "Lowest ranked items" },
-		{ value: "Low", description: "Next lowest ranked items" },
-		{ value: "Medium", description: "Middle " },
-		{ value: "High", description: "Highest ranked items" },
+		{ value: "Very Low", description: ": Lowest ranked items" },
+		{ value: "Low", description: ": Next lowest ranked items" },
+		{ value: "Medium", description: " is the middle value " },
+		{ value: "High", description: ": Highest ranked items" },
 	], // Only used if "legend": "custom"
 	"nullText": "-",
 	//"numberFormat": ",.0f",
