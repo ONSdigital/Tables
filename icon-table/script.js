@@ -102,7 +102,7 @@ function drawTable() {
             .text(d => {
                 if (legendMode === "custom") {
                     return d.description
-                        ? `${d.value}: ${d.description}`
+                        ? `${d.value}${d.description}`
                         : d.value;
                 }
                 return d;
@@ -154,10 +154,18 @@ function drawTable() {
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
 
-    headerRow
-        .append("td");
+    const corner = headerRow.append("th")
+        .attr("scope", "col")
+        .attr("class", "col--text corner-cell")
+        .attr("id", "corner");
 
-    headerRow.selectAll("th")
+
+    if (config.firstColHeader) {
+        corner.text(config.firstColHeader);
+    }
+
+
+    headerRow.selectAll("th.data-col")
         .data(valueColumns.map((col, i) => ({
             col,
             type: colTypes[i]
