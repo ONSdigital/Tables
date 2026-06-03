@@ -4,8 +4,7 @@ config = {
 	"nullText": "-",
 	//"numberFormat": ",.0f",
 	"numberFormat": [",.0f", ",.0f", ",.1f"],
-	"titleText": "Table 1: Title",
-	"subtitleText": "Subtitle text",
+	"tableDescription": "The main message is summarised by the table title and the data behind the table is available to download below.", // Must update for screenreaders
 	"sourceText": "Office for National Statistics",
 	"minColWidth": 40,
 	"maxColWidth": 180
