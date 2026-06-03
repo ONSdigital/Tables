@@ -2,6 +2,7 @@ import { addSource } from "../lib/helpers.js";
 
 let container = d3.select('#table-container');
 let tableData;
+let pymChild = null;
 
 /* =========================================================
    MAIN RENDER FUNCTION
@@ -218,6 +219,11 @@ function drawTable() {
     }
 
     addSource("source", config.sourceText);
+
+    if (pymChild) {
+        pymChild.sendHeight();
+    }
+
 }
 
 /* =========================================================
@@ -226,5 +232,7 @@ function drawTable() {
 d3.csv(config.graphicDataURL).then(rawData => {
     tableData = rawData.map(d => ({ ...d }));
     tableData.columns = rawData.columns;
-    drawTable();
+    pymChild = new pym.Child({
+        renderCallback: drawTable
+    });
 });
