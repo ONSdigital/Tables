@@ -12,6 +12,10 @@ function drawTable() {
     container.html("");
 
     const categoryColumn = config.categoryColumn;
+    const categoryColumns = Array.isArray(categoryColumn)
+        ? categoryColumn
+        : [categoryColumn];
+
     const legendMode = config.legend ?? "auto";
 
     let categoryScale = null;
@@ -24,8 +28,14 @@ function drawTable() {
     if (categoryColumn) {
 
         const rawCategories = Array.from(
-            new Set(tableData.map(d => (d[categoryColumn] ?? "").toString().trim()))
-        ).filter(d => d !== "");
+            new Set(
+                tableData.flatMap(d =>
+                    categoryColumns
+                        .map(col => (d[col] ?? "").toString().trim())
+                        .filter(v => v !== "")
+                )
+            )
+        );
 
         if (legendMode === "custom" && Array.isArray(config.legendText)) {
             legendItemsData = config.legendText;
@@ -37,8 +47,9 @@ function drawTable() {
 
         categoryScale = d3.scaleOrdinal()
             .domain(categories)
-            .range(config.colourPalette || d3.schemeTableau10);
+            .range(config.colourPalette);
     }
+
 
     /* ---------------------------------------------
        NORMALISE COLUMN TYPES + NUMBER FORMATTERS
@@ -202,7 +213,7 @@ function drawTable() {
                     return;
                 }
 
-                if (categoryColumn && d.col === categoryColumn) {
+                if (categoryColumn && categoryColumns.includes(d.col)) {
 
                     const wrapper = cell.append("span")
                         .style("display", "inline-flex")

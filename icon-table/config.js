@@ -1,12 +1,13 @@
 config = {
 	"graphicDataURL": "data.csv",
-	"colTypes": "th", // d = date, n = number, t = text, h = html (not including name)
-	"categoryColumn": "Category",
+	"colTypes": "tth", // d = date, n = number, t = text, h = html (not including name)
+	"categoryColumn": ["Quality", "Level"],
 	"circleRadius": 14, // diameter of circle in px
 	"colourPalette": ONSpalette,
 	"legend": "custom", // false = no legend, "auto" for just category names
 	"legendText": [
-		{ value: "Low", description: "Lowest ranked items" },
+		{ value: "Very Low", description: "Lowest ranked items" },
+		{ value: "Low", description: "Next lowest ranked items" },
 		{ value: "Medium", description: "Middle " },
 		{ value: "High", description: "Highest ranked items" },
 	], // Only used if "legend": "custom"
