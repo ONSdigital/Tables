@@ -257,6 +257,15 @@ function drawTable() {
             });
     });
 
+
+    if (config.freezeFirstColumn) {
+        scrollWrapper.classed("freeze-first-col", true);
+
+        colgroup.select("col:first-child")
+            .style("width", config.firstColWidth + "px" || "150px");
+
+    }
+    
     addSource("source", config.sourceText);
 
     if (pymChild) {

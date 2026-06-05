@@ -91,24 +91,24 @@ function drawTable() {
     }
 
 
-    
-headerRow.selectAll("th.data-col")
-    .data(valueColumns.map((col, i) => ({
-        col,
-        type: colTypes[i]
-    })))
-    .enter()
-    .append("th")
-    .attr("scope", "col")
-    .attr("id", d => d.col)
-    .attr("class", d =>
-        "data-col " + (
-            d.type === "n" ? "col--number" :
-            d.type === "d" ? "col--date" :
-            "col--text"
+
+    headerRow.selectAll("th.data-col")
+        .data(valueColumns.map((col, i) => ({
+            col,
+            type: colTypes[i]
+        })))
+        .enter()
+        .append("th")
+        .attr("scope", "col")
+        .attr("id", d => d.col)
+        .attr("class", d =>
+            "data-col " + (
+                d.type === "n" ? "col--number" :
+                    d.type === "d" ? "col--date" :
+                        "col--text"
+            )
         )
-    )
-    .text(d => d.col);
+        .text(d => d.col);
 
 
     /* =========================================================
@@ -170,6 +170,16 @@ headerRow.selectAll("th.data-col")
 
 
     });
+
+
+    if (config.freezeFirstColumn) {
+        scrollWrapper.classed("freeze-first-col", true);
+
+        colgroup.select("col:first-child")
+            .style("width", config.firstColWidth + "px" || "150px");
+
+    }
+
 
     addSource("source", config.sourceText);
 

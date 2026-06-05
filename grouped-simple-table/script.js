@@ -174,11 +174,16 @@ function drawTable() {
 
         const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
-        tbody.append("tr")
+        const groupTh = tbody.append("tr")
             .append("th")
             .attr("id", groupId)
             .attr("scope", "colgroup")
             .attr("colspan", colSpan)
+            .classed("colgroup-header", true);
+
+        groupTh.append("span")
+            .attr("class", "sticky-first-col")
+            .style("min-width", (config.firstColWidth || 150) + "px")
             .text(groupName);
 
         rows.forEach((row, index) => {
@@ -238,6 +243,15 @@ function drawTable() {
 
 
         });
+    }
+
+
+    if (config.freezeFirstColumn) {
+        scrollWrapper.classed("freeze-first-col", true);
+
+        colgroup.select("col:first-child")
+            .style("width", config.firstColWidth + "px" || "150px");
+
     }
 
     addSource("source", config.sourceText);
