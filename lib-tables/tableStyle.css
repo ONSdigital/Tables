@@ -11,14 +11,33 @@
     white-space: nowrap !important;
 }
 
-/* Title + Subtitle */
-.table-title {
-    font-size: 1.17em;
-    font-weight: bold;
-    margin-bottom: 0.25rem;
-    padding-top: 15px;
+/* Column headers */
+table thead th {
+    vertical-align: bottom;
 }
 
-.table-subtitle {
-    margin-bottom: 1rem;
+
+/* Freeze first column */
+.table-scroll.freeze-first-col th:first-child,
+.table-scroll.freeze-first-col td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: white; 
 }
+
+.table-scroll.freeze-first-col thead th:first-child {
+    z-index: 3;
+}
+
+.table-scroll.freeze-first-col th:first-child::after,
+.table-scroll.freeze-first-col td:first-child::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: 5px;
+    height: 100%;
+    width: 1px;
+}
+

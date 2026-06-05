@@ -9,6 +9,7 @@ table {
 .table-scroll {
     overflow-x: auto;
     width: 100%;
+    position: relative;
 }
 
 .table-scroll table {
@@ -25,6 +26,9 @@ table {
     white-space: normal;
     word-break: break-word;
 }
+
+
+
 
 
 
@@ -78,4 +82,33 @@ thead th.corner-cell {
 
 .col--number {
     text-align: right;
+}
+
+
+
+
+/* Only active when feature enabled */
+.table-scroll.freeze-first-col th:first-child,
+.table-scroll.freeze-first-col td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: white; /* important to cover content underneath */
+}
+
+/* Header cell needs to sit above body cells */
+.table-scroll.freeze-first-col thead th:first-child {
+    z-index: 3;
+}
+
+/* Optional: subtle divider to show separation */
+.table-scroll.freeze-first-col th:first-child::after,
+.table-scroll.freeze-first-col td:first-child::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background: #ddd;
 }
