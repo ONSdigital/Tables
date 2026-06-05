@@ -176,7 +176,7 @@ function drawTable() {
         scrollWrapper.classed("freeze-first-col", true);
 
         colgroup.select("col:first-child")
-            .style("min-width", config.firstColWidth + "px" || "150px");
+            .style("width", config.firstColWidth + "px" || "150px");
 
     }
 
