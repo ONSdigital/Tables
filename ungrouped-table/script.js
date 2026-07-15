@@ -11,21 +11,18 @@ function drawTable() {
 
     container.html("");
 
-    const categoryColumn = config.iconColumn;
-    const categoryColumns = Array.isArray(categoryColumn)
-        ? categoryColumn
-        : [categoryColumn];
-
-    const legendMode = config.legend ?? "auto";
-
+    // Category icons
+    let categoryColumns = Array.isArray(config.categoryIcons.columns) ? config.categoryIcons.columns : [config.categoryIcons.columns];
+    let legendMode = config.categoryIcons.legend ?? "auto";
     let categoryScale = null;
     let categories = [];
     let legendItemsData = [];
 
+
     /* =========================================================
        CATEGORY + LEGEND DATA PREP
     ========================================================= */
-    if (categoryColumn) {
+    if (config.categoryIcons.enabled) {
 
         const rawCategories = Array.from(
             new Set(
@@ -37,8 +34,8 @@ function drawTable() {
             )
         );
 
-        if (legendMode === "custom" && Array.isArray(config.legendText)) {
-            legendItemsData = config.legendText;
+        if (legendMode === "custom" && Array.isArray(config.categoryIcons.legendText)) {
+            legendItemsData = config.categoryIcons.legendText;
             categories = legendItemsData.map(d => d.value);
         } else {
             categories = rawCategories;
@@ -47,13 +44,47 @@ function drawTable() {
 
         categoryScale = d3.scaleOrdinal()
             .domain(categories)
-            .range(config.colourPalette);
+            .range(config.categoryIcons.colourPalette);
+    }
+
+    // Legend
+    if (config.categoryIcons.enabled && legendMode !== false && legendItemsData.length) {
+
+        const legend = container.append("div")
+            .attr("class", "table-legend");
+
+        const legendItems = legend.selectAll(".legend-item")
+            .data(legendItemsData)
+            .enter()
+            .append("div")
+            .attr("class", "legend-item");
+
+        legendItems.append("span")
+            .style("width", config.categoryIcons.circleRadius + "px")
+            .style("height", config.categoryIcons.circleRadius + "px")
+            .style("border-radius", "50%")
+            .style("display", "inline-block")
+            .style("margin-right", "6px")
+            .style("background-color", d =>
+                legendMode === "custom" ? categoryScale(d.value) : categoryScale(d)
+            );
+
+        legendItems.append("span")
+            .attr("class", "legend--text")
+            .text(d => {
+                if (legendMode === "custom") {
+                    return d.description
+                        ? `${d.value}${d.description}`
+                        : d.value;
+                }
+                return d;
+            });
     }
 
 
-    /* ---------------------------------------------
+    /* =========================================================
        NORMALISE COLUMN TYPES + NUMBER FORMATTERS
-    --------------------------------------------- */
+    ========================================================= */
     const colTypes = config.colTypes.split("");
 
     const numberFormatters = (() => {
@@ -74,42 +105,6 @@ function drawTable() {
     })();
 
     /* =========================================================
-       LEGEND
-    ========================================================= */
-    if (categoryColumn && legendMode !== false && legendItemsData.length) {
-
-        const legend = container.append("div")
-            .attr("class", "table-legend");
-
-        const legendItems = legend.selectAll(".legend-item")
-            .data(legendItemsData)
-            .enter()
-            .append("div")
-            .attr("class", "legend-item");
-
-        legendItems.append("span")
-            .style("width", config.circleRadius + "px")
-            .style("height", config.circleRadius + "px")
-            .style("border-radius", "50%")
-            .style("display", "inline-block")
-            .style("margin-right", "6px")
-            .style("background-color", d =>
-                legendMode === "custom" ? categoryScale(d.value) : categoryScale(d)
-            );
-
-        legendItems.append("span")
-            .attr("class", "legend--text")
-            .text(d => {
-                if (legendMode === "custom") {
-                    return d.description
-                        ? `${d.value}${d.description}`
-                        : d.value;
-                }
-                return d;
-            });
-    }
-
-    /* =========================================================
        SCROLL WRAPPER
     ========================================================= */
     const scrollWrapper = container.append("div")
@@ -127,7 +122,6 @@ function drawTable() {
        COLUMN STRUCTURE
     ========================================================= */
     const allColumns = tableData.columns;
-
     const nameColumn = "name";
     const valueColumns = allColumns.filter(c => c !== nameColumn);
 
@@ -136,7 +130,6 @@ function drawTable() {
     ========================================================= */
     const colgroup = table.append("colgroup");
     colgroup.append("col").attr("class", "col--text");
-
     valueColumns.forEach((_, i) => {
         const typeChar = colTypes[i];
         const typeClass =
@@ -149,22 +142,17 @@ function drawTable() {
     });
 
     /* =========================================================
-       THEAD (UNCHANGED)
+       THEAD 
     ========================================================= */
     const thead = table.append("thead");
     const headerRow = thead.append("tr");
-
     const corner = headerRow.append("th")
         .attr("scope", "col")
         .attr("class", "col--text corner-cell")
         .attr("id", "corner");
-
-
     if (config.firstColHeader) {
         corner.text(config.firstColHeader);
     }
-
-
     headerRow.selectAll("th.data-col")
         .data(valueColumns.map((col, i) => ({
             col,
@@ -182,20 +170,18 @@ function drawTable() {
         .text(d => d.col);
 
     /* =========================================================
-       TBODY (UNCHANGED EXCEPT CATEGORY DOT)
+       TBODY 
     ========================================================= */
     const tbody = table.append("tbody");
 
     tableData.forEach((row, index) => {
         const rowId = `r${index + 1}`;
         const tr = tbody.append("tr");
-
         tr.append("th")
             .attr("id", rowId)
             .attr("scope", "row")
             .attr("class", "col--text")
             .text(row[nameColumn]);
-
         tr.selectAll("td")
             .data(valueColumns.map((col, i) => ({
                 col,
@@ -221,15 +207,15 @@ function drawTable() {
                     return;
                 }
 
-                if (categoryColumn && categoryColumns.includes(d.col)) {
+                if (config.categoryIcons.enabled && categoryColumns.includes(d.col)) {
 
                     const wrapper = cell.append("span")
                         .style("display", "inline-flex")
                         .style("align-items", "center");
 
                     wrapper.append("span")
-                        .style("width", config.circleRadius + "px")
-                        .style("height", config.circleRadius + "px")
+                        .style("width", config.categoryIcons.circleRadius + "px")
+                        .style("height", config.categoryIcons.circleRadius + "px")
                         .style("border-radius", "50%")
                         .style("display", "inline-block")
                         .style("margin-right", "6px")
@@ -258,14 +244,14 @@ function drawTable() {
     });
 
 
-    if (config.freezeFirstColumn) {
+    if (config.freezeFirstColumn.enabled) {
         scrollWrapper.classed("freeze-first-col", true);
 
         colgroup.select("col:first-child")
-            .style("width", config.firstColWidth + "px" || "150px");
+            .style("width", config.freezeFirstColumn.firstColWidth + "px" || "150px");
 
     }
-    
+
     addSource("source", config.sourceText);
 
     if (pymChild) {
