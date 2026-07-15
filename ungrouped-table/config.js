@@ -1,14 +1,14 @@
 config = {
 	// general table settings
 	"graphicDataURL": "data.csv",
-	"colTypes": "tnnnnnh", // d = date, n = number, t = text, h = html (not including name)
+	"colTypes": "tnnnnnnnnh", // d = date, n = number, t = text, h = html (not including name)
 	"nullText": "-",
 	"firstColHeader": null, // Top left column name, blank by default
 	"numberFormat": ".2f", //"numberFormat": ",.0f",
 	"tableDescription": "The main message is summarised by the table title and the data behind the table is available to download below.", // Must update for screenreaders
 	"sourceText": "Office for National Statistics",
 	"minColWidth": 40,
-	"maxColWidth": 180,
+	"maxColWidth": 150,
 	"boldRows": null,
 	"fixRowHeight": false, // all rows as tall as largest row
 	////// Visual settings //////
