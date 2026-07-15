@@ -1,4 +1,5 @@
-import { addSource } from "../lib/helpers.js";
+import { addSource, getTextColorFromBackground } from "../lib/helpers.js";
+import { addMiniBarLabel } from "../lib-tables/helpers.js";
 
 let container = d3.select("#table-container");
 let tableData;
@@ -114,6 +115,63 @@ function drawTable() {
             });
     }
 
+    /* ---------------------------------------------
+BAR SETUP
+Renders configured columns as small horizontal bars.
+--------------------------------------------- */
+    let barColumns = [];
+    let barScales = null;
+    const barWidth = 150;
+    const barHeight = 28;
+    const barPad = 10;
+
+    if (
+        config.bars.enabled &&
+        Array.isArray(config.bars.columns) &&
+        config.bars.columns.length
+    ) {
+        barColumns = config.bars.columns;
+
+        const allBarValues = tableData.flatMap(row =>
+            barColumns.map(col => {
+                const raw = (row[col] ?? "").toString().trim();
+                return raw === "" ? null : +raw;
+            })
+        ).filter(v => v !== null && !isNaN(v));
+
+        let xDomain;
+
+        if (
+            Array.isArray(config.bars.xAxisRange) &&
+            config.bars.xAxisRange.length === 2
+        ) {
+            xDomain = config.bars.xAxisRange.map(Number);
+        } else {
+            xDomain = allBarValues.length
+                ? d3.extent(allBarValues)
+                : [0, 1];
+
+            xDomain[0] = Math.min(xDomain[0], 0);
+            xDomain[1] = Math.max(xDomain[1], 0);
+
+            if (xDomain[0] === xDomain[1]) {
+                xDomain[0] -= 1;
+                xDomain[1] += 1;
+            }
+        }
+
+
+
+        barScales = {
+            width: barWidth,
+            height: barHeight,
+            pad: barPad,
+            x: d3.scaleLinear()
+                .domain(xDomain)
+                .range([barPad, barWidth - barPad])
+        };
+
+    }
 
     /* ---------------------------------------------
        SPARKLINE SETUP
@@ -155,6 +213,17 @@ function drawTable() {
             i = sparklineRange.endIdx;
             continue;
         }
+
+        if (barColumns.includes(valueColumns[i])) {
+            columnBlocks.push({
+                kind: "bar",
+                col: valueColumns[i],
+                type: colTypes[i],
+                i
+            });
+            continue;
+        }
+
         columnBlocks.push({
             kind: "value",
             col: valueColumns[i],
@@ -164,8 +233,8 @@ function drawTable() {
     }
 
     const sparklineSvgWidth = 150;
-    const sparklineSvgHeight = 60;
-    const sparklinePad = 2;
+    const sparklineSvgHeight = 70;
+    const sparklinePad = 6;
 
     let sparklineScales = null;
 
@@ -217,6 +286,8 @@ function drawTable() {
 
 
 
+
+
     /* =========================================================
        SCROLL WRAPPER
     ========================================================= */
@@ -230,6 +301,9 @@ function drawTable() {
     table.append("caption")
         .attr("class", "visually-hidden")
         .text(config.tableDescription);
+
+
+
 
     /* =========================================================
        COLGROUP
@@ -246,6 +320,9 @@ function drawTable() {
 
         colgroup.append("col").attr("class", typeClass);
     });
+
+
+
 
     /* =========================================================
        THEAD 
@@ -299,6 +376,16 @@ function drawTable() {
                         value: null,
                         type: "h",
                         i: null
+                    };
+                }
+
+                if (d.kind === "bar") {
+                    return {
+                        kind: "bar",
+                        col: d.col,
+                        value: row[d.col],
+                        type: d.type,
+                        i: d.i
                     };
                 }
 
@@ -362,7 +449,7 @@ function drawTable() {
                         svg.append("path")
                             .datum(series)
                             .attr("fill", config.sparklines.colourPalette[0])
-                            .attr("fill-opacity", 0.3)
+                            .attr("fill-opacity", 0.2)
                             .attr("d", area);
 
                         svg.append("line")
@@ -370,16 +457,15 @@ function drawTable() {
                             .attr("x2", sparklineScales.x.range()[1])
                             .attr("y1", zeroY)
                             .attr("y2", zeroY)
-                            .attr("stroke", config.sparklines.zeroLineColour || "#707070")
-                            .attr("stroke-width", 1)
-                            .attr("stroke-opacity", 0.35);
+                            .attr("stroke", ONScolours.grey40)
+                            .attr("stroke-width", 1);
                     }
 
                     svg.append("path")
                         .datum(series)
                         .attr("fill", "none")
                         .attr("stroke", config.sparklines.colourPalette[0])
-                        .attr("stroke-width", 2)
+                        .attr("stroke-width", 2.5)
                         .attr("stroke-linecap", "round")
                         .attr("stroke-linejoin", "round")
                         .attr("d", line);
@@ -394,6 +480,78 @@ function drawTable() {
 
                     return;
                 }
+
+                /* ---------------------------------------------
+                DRAW BARS
+                --------------------------------------------- */
+                if (d.kind === "bar") {
+                    const raw = (row[d.col] ?? "").toString().trim();
+
+                    if (raw === "" || isNaN(+raw)) {
+                        cell.text(config.nullText);
+                        return;
+                    }
+
+                    const numVal = +raw;
+                    const formattedValue = d3.format(config.bars.numFormat)(Math.abs(numVal));
+
+                    const zeroX = barScales.x(0);
+                    const valueX = barScales.x(numVal);
+
+                    const barColour =
+                        numVal > 0 ? config.bars.colourPalette[0] :
+                            numVal < 0 ? config.bars.colourPalette[1] :
+                                config.bars.colourPalette[2];
+
+                    const svg = cell.append("svg")
+                        .attr("width", barScales.width)
+                        .attr("height", barScales.height)
+                        .attr("aria-hidden", "true");
+
+                    svg.append("rect")
+                        .attr("x", barScales.x.range()[0])
+                        .attr("y", 0)
+                        .attr("width", barScales.x.range()[1] - barScales.x.range()[0])
+                        .attr("height", barHeight)
+                        .attr("fill", ONScolours.grey10);
+
+                    svg.append("rect")
+                        .attr("x", Math.min(zeroX, valueX))
+                        .attr("y", 0)
+                        .attr("width", Math.abs(valueX - zeroX))
+                        .attr("height", barHeight)
+                        .attr("fill", barColour);
+
+                    svg.append("line")
+                        .attr("x1", zeroX)
+                        .attr("x2", zeroX)
+                        .attr("y1", 0)
+                        .attr("y2", barHeight)
+                        .attr("stroke-width", 1)
+                        .attr("stroke", ONScolours.grey100);
+
+                    if (config.bars.dataLabels) {
+
+                        addMiniBarLabel({
+                            svg,
+                            value: numVal,
+                            xScale: barScales.x,
+                            width: barScales.width,
+                            height: barScales.height,
+                            pad: barScales.pad,
+                            barColour,
+                            numberFormat: config.bars.numFormat
+                        });
+
+                    }
+
+                    cell.append("span")
+                        .attr("class", "visually-hidden")
+                        .text(d3.format(config.bars.numFormat)(Math.abs(numVal)));
+
+                    return;
+                }
+
 
                 // Deal with null values
                 const raw = (d.value ?? "").toString().trim();

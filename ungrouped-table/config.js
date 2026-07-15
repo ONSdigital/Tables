@@ -1,7 +1,7 @@
 config = {
 	// general table settings
 	"graphicDataURL": "data.csv",
-	"colTypes": "tnnnnnnnnh", // d = date, n = number, t = text, h = html (not including name)
+	"colTypes": "tnnnnnnnnnh", // d = date, n = number, t = text, h = html (not including name)
 	"nullText": "-",
 	"firstColHeader": null, // Top left column name, blank by default
 	"numberFormat": ".2f", //"numberFormat": ",.0f",
@@ -46,9 +46,11 @@ config = {
 	// bars
 	"bars": {
 		"enabled": true,
-		"columns": ["2024 value"], // either null, or an array of column names
-		"title": "2014-2024 trend", // header title for the sparkline column. 
-		"colourPalette": ONSpalette
+		"columns": ["Value 2"],
+		"xAxisRange": "auto", // "auto" or [min, max] e.g. [-1, 1]
+		"dataLabels": true, // show data labels on bars
+		"numFormat": ".0f",
+		"colourPalette": [ONScolours.positive, ONScolours.negative, ONScolours.grey50],
 	},
 	////// Interactive settings //////
 	// Freeze first column
