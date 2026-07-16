@@ -5,7 +5,7 @@ Templates for tables created by the data visualisation team, including static, i
 This repository is a work-in-progress. It currently contains two table templates (ungrouped and grouped row) which defines the structure of the table.
 
 * Ungrouped: rectangular table with no merged cells or grouping.
-* Grouped row: where sets of rows belong to the some categories. Structure based on >https://www.w3.org/WAI/tutorials/tables/multi-level/#table-with-three-headers-related-to-each-data-cell>.
+* Grouped row: where sets of rows belong to the some categories. Structure based on <https://www.w3.org/WAI/tutorials/tables/multi-level/#table-with-three-headers-related-to-each-data-cell>.
 
 The following features have or will be available for each table template and can be switched on in the config files. The default is that all of these options (besides numbers and text) are switched off.
 
@@ -14,11 +14,12 @@ The following features have or will be available for each table template and can
 | **Visual features**      |           |             |                          |
 | Numbers                  | Yes       | Yes         | Right aligned            |
 | Text                     | Yes       | Yes         | Left aligned             |
-| HTML Text                | Yes       | Yes         | Left aligned             |
+| HTML Text                | Yes       | Yes         | Left aligned (or right)  |
 | Category icons           | Yes       | Yes         |                          |
 | Arrow icons              | Yes       | Yes         |                          |
 | Sparklines               | Yes       | Yes         |                          |
 | Bars                     | Yes       | Yes         |                          |
+| Top left column title    | Yes       | No          |                          |
 | **Interactive features** |           |             |                          |
 | Pagination               | Yes       | Yes         | Default 10 rows per page |
 | Freeze first column      | Yes       | Yes         |                          |
