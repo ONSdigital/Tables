@@ -39,7 +39,7 @@ config = {
 		"enabled": true,
 		"columns": ["2019", "2024"], // either null, or an array of 2 column names e.g. ["2020", "2023"] giving the inclusive range of columns to render as a single sparkline column instead of printed values
 		"title": "2019-2024", // header title for the sparkline column. 
-		"colourPalette": ONSpalette,
+		"colourPalette": [ONScolours.oceanBlue],
 		"yAxisRange": "auto", // "auto" or [min, max] e.g. [-1, 1]
 		"drawZero": true
 	},

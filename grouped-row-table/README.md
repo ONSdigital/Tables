@@ -1,25 +1,90 @@
-# Grouped Simple Table
+# Grouped row table
 
 A table where rows are grouped together into categories.
 
-## Config options
+### General table settings
 
-* `graphicDataURL`: the file path to the data.
-    * the first column should be called `group` and provides the row group variables.
-    * the second column should be called `name` and provides the (nested) row headers.
-    * the remaining columns are the data columns.
-* `colTypes`: character string defining the column types e.g. `"nnnn"` where `d = date`, `n = number`, `t = text`, and `h = html`. The `name` column is not included here as it is always left aligned.
-* `nullText`: the text to display for empty or missing values.
-* `numberFormat`: defines how numeric columns are formatted.  
-    * can be a single format string (applied to all numeric columns), or  
-    * an array of format strings matching each column in `colTypes`.
-* `tableDescription`: Table description to be added to caption.
-* `sourceText`: the source text (not including *Source: *).
-* `minColWidth`: minimum column width in pixels, across all columns.
-* `maxColWidth`: maximum column width in pixels, across all columns.
+- `graphicDataURL`: Path to the data file used by the table.
+  - Usually a CSV file.
+  - Example: `"data.csv"`
+- `colTypes`: Defines the type of each data column (excluding the row label column). NB. currently includes sparklines etc but will be changing.
+  - Supported values:
+    - `t` = text
+    - `n` = number
+    - `d` = date
+    - `h` = HTML
+- `nullText`: Text displayed when a value is null, missing or invalid.
+- `numberFormat`: Default D3 number format applied to numeric columns.
+- `tableDescription`: Screen reader description of the table. Should explain the purpose and content of the table.
+- `sourceText`: Source displayed beneath the table.
+- `minColWidth`: Minimum column width in pixels.
+- `maxColWidth`: Maximum column width in pixels.
+
+### Category icons
+
+- `categoryIcons.enabled`: Enables category icon rendering.
+- `categoryIcons.columns`: Array of columns that should be rendered as 
+- `categoryIcons.circleRadius`: Diameter of each category icon circle in pixels.
+- `categoryIcons.colourPalette`: Colour palette used for category values.
+- `categoryIcons.legend`: Controls legend behaviour.
+  - `false` = no legend.
+  - `"auto"` = automatically generate legend entries from category values.
+  - `"custom"` = use the entries defined in `legendText`.
+- `categoryIcons.legendText`: Custom legend definitions used when `legend` is set to `"custom"`. Each item must contain:
+    - `value` = category name.
+    - `description` = explanatory text.
+
+### Arrow icons
+
+- `arrowIcons.enabled`: Enables arrow icon rendering.
+- `arrowIcons.columns`: Columns that should display arrows. Should be numeric values.
+- `arrowIcons.colourPalette`: Array containing colours for:
+    - Positive values.
+    - Negative values.
+    - Zero values.
+- `arrowIcons.numFormat`: D3 format applied to displayed values.
+- `arrowIcons.suffixText`: Text appended after the formatted value.
+
+### Sparklines
+
+- `sparklines.enabled`: Enables sparkline rendering.
+- `sparklines.columns`: Inclusive start and end column names used to create each sparkline. All columns within the specified range are combined into a single sparkline column.
+- `sparklines.title`: Header shown above the sparkline column.
+- `sparklines.colourPalette`: Colour palette used when rendering sparklines.
+- `sparklines.yAxisRange`: Controls the Y-axis scale.
+  - `"auto"` = calculate from the data.
+  - `[min, max]` = use a fixed scale.
+- `sparklines.drawZero`: When `true`, draws a horizontal zero reference line and fills with a shaded area
+
+### Bars 
+
+- `bars.enabled`: Enables mini bar chart rendering.
+- `bars.columns`: Array of columns to render as bar charts.
+- `bars.xAxisRange`: Controls the bar chart scale.
+  - `"auto"` = calculate range from the data.
+  - `[min, max]` = use a fixed range.
+- `bars.dataLabels`: When `true`, displays formatted values as labels on the bars.
+- `bars.numFormat`: D3 number format used for bar labels.
+- `bars.colourPalette`: Array containing colours for:
+    - Positive values.
+    - Negative values.
+    - Zero values.
+
+### Freeze first row
+
+- `freezeFirstColumn.enabled`: Keeps the first column fixed while horizontally scrolling.
+- `freezeFirstColumn.firstColWidth`: Width of the frozen first column in pixels.
+
+## Features not yet implemented but coming soon
+
+* Option to bold format some rows
+* Option to force same height across all rows
+* Pagination
+* Filters
+* Search
 
 ## Accessibility
 
 * Formal accessibility tested still to be carried out.
 * Based on Example 2 in [this guide](https://www.w3.org/WAI/tutorials/tables/multi-level/), using the `headers` attribute to properly associated headers with the data cell.
-* Table title and subtitle are implemented as text so that they do not scroll with the title. However, the content is repeated and visually hidden as a `caption` so that screenreaders can access the table more easily.
+
