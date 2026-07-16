@@ -1,8 +1,8 @@
-name,Quality,Level,Description
-Item 1,High,High,"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-Item 2,Medium,Medium,"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-Item 3,High,High,Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-Item 4,Low,Very Low,"Excepteur sint<sup>Superscript</sup> occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-Item 5,High,High,Ut hendrerit semper vel class aptent taciti sociosqu.
-Item 6,Medium,Medium,Ad litora torquent per conubia nostra inceptos himenaeos.
-Item 7,Medium,Medium,Quisque faucibus ex sapien vitae pellentesque sem placerat.
+name,Quality,Value,Value 2,Change,2019,2020,2021,2022,2023,2024,Description
+Item 1,High,0.905641434,-4.620054049,3.739623227,0.884904809,0.222434826,0.478797948,0.932589591,0.286056243,0.336939635,Lorem ipsum dolor sit amet.
+Item 2,Medium,0.688953147,0.326353513,-2.929635614,0.622032226,0.745694816,0.764398359,0.776016935,0.711295019,0.64783593,Ut enim ad minim veniam. 
+Item 3,High,0.617255921,0.212745332,3.773815141,0.067225464,0.617602773,0.522730272,0.307019385,0.197744943,0.56016651,Duis aute irure dolor in reprehenderit in voluptate.
+Item 4,Low,0.61637549,1.355833769,0.072164471,0.897090452,0.152749851,0.025449568,0.68165978,0.901071302,0.179039251,Excepteur 1<sup>st</sup> occaecat.
+Item 5,High,0.403612258,0,0,0.276443714,0.243981581,0.742689218,0.009766025,0.03597176,0.094361247,Ut hendrerit.
+Item 6,Medium,0.993517197,2.76047211,1.274219192,0.936108891,-0.735020259,0.503047205,0.711771385,0.646836505,0.456061285,Ad litora torquent.
+Item 7,Medium,0.430570698,0.666499836,0.133922788,0.355635884,0.070873273,0.127630245,0.020414534,0.821580411,0.401893176,Quisque faucibus.
