@@ -1,5 +1,7 @@
 import { addSource, getTextColorFromBackground } from "../lib/helpers.js";
-import { addMiniBarLabel } from "../lib-tables/helpers.js";
+import { addBars } from "../lib-tables/bars.js";
+import { addSparkline } from "../lib-tables/sparklines.js";
+import { addArrows } from "../lib-tables/arrows.js";
 
 let container = d3.select("#table-container");
 let tableData;
@@ -175,9 +177,6 @@ Renders configured columns as small horizontal bars.
 
     /* ---------------------------------------------
        SPARKLINE SETUP
-       Collapses a contiguous range of value columns into a
-       single sparkline column, sharing one x/y scale across
-       every row so trends are visually comparable.
        --------------------------------------------- */
     let sparklineRange = null;
 
@@ -285,9 +284,6 @@ Renders configured columns as small horizontal bars.
 
 
 
-
-
-
     /* =========================================================
        SCROLL WRAPPER
     ========================================================= */
@@ -301,7 +297,6 @@ Renders configured columns as small horizontal bars.
     table.append("caption")
         .attr("class", "visually-hidden")
         .text(config.tableDescription);
-
 
 
 
@@ -352,6 +347,9 @@ Renders configured columns as small horizontal bars.
                     "col--text"
         )
         .text(d => d.col);
+
+
+
 
     /* =========================================================
        TBODY 
@@ -409,145 +407,52 @@ Renders configured columns as small horizontal bars.
 
                 const cell = d3.select(this);
 
+
                 /* ---------------------------------------------
                 DRAW SPARKLINES
                 --------------------------------------------- */
                 if (d.kind === "sparkline") {
 
-                    const series = d.cols
-                        .map(col => {
-                            const raw = (row[col] ?? "").toString().trim();
-                            return {
-                                col,
-                                value: raw === "" ? null : +raw
-                            };
-                        })
-                        .filter(p => p.value !== null && !isNaN(p.value));
-
-                    if (!series.length) {
-                        cell.text(config.nullText);
-                        return;
-                    }
-
-                    const svg = cell.append("svg")
-                        .attr("width", sparklineScales.width)
-                        .attr("height", sparklineScales.height)
-                        .attr("aria-hidden", "true");
-
-                    const line = d3.line()
-                        .x(d => sparklineScales.x(d.col))
-                        .y(d => sparklineScales.y(d.value));
-
-                    if (config.sparklines.drawZero) {
-                        const zeroY = sparklineScales.y(0);
-
-                        const area = d3.area()
-                            .x(d => sparklineScales.x(d.col))
-                            .y0(zeroY)
-                            .y1(d => sparklineScales.y(d.value));
-
-                        svg.append("path")
-                            .datum(series)
-                            .attr("fill", config.sparklines.colourPalette[0])
-                            .attr("fill-opacity", 0.2)
-                            .attr("d", area);
-
-                        svg.append("line")
-                            .attr("x1", sparklineScales.x.range()[0])
-                            .attr("x2", sparklineScales.x.range()[1])
-                            .attr("y1", zeroY)
-                            .attr("y2", zeroY)
-                            .attr("stroke", ONScolours.grey40)
-                            .attr("stroke-width", 1);
-                    }
-
-                    svg.append("path")
-                        .datum(series)
-                        .attr("fill", "none")
-                        .attr("stroke", config.sparklines.colourPalette[0])
-                        .attr("stroke-width", 2.5)
-                        .attr("stroke-linecap", "round")
-                        .attr("stroke-linejoin", "round")
-                        .attr("d", line);
-
-                    const descriptionText = series
-                        .map(v => `${v.col}: ${v.value !== null && !isNaN(v.value) ? v.value : config.nullText}`)
-                        .join(", ");
-
-                    cell.append("span")
-                        .attr("class", "visually-hidden")
-                        .text(`${d.title} — ${descriptionText}`);
+                    addSparkline({
+                        cell,
+                        row,
+                        d,
+                        config,
+                        sparklineScales,
+                        ONScolours
+                    });
 
                     return;
                 }
+
 
                 /* ---------------------------------------------
                 DRAW BARS
                 --------------------------------------------- */
                 if (d.kind === "bar") {
-                    const raw = (row[d.col] ?? "").toString().trim();
 
-                    if (raw === "" || isNaN(+raw)) {
-                        cell.text(config.nullText);
-                        return;
-                    }
+                    addBars({
+                        cell,
+                        row,
+                        d,
+                        config,
+                        barScales,
+                        barHeight
+                    });
 
-                    const numVal = +raw;
-                    const formattedValue = d3.format(config.bars.numFormat)(Math.abs(numVal));
+                    return;
+                }
 
-                    const zeroX = barScales.x(0);
-                    const valueX = barScales.x(numVal);
 
-                    const barColour =
-                        numVal > 0 ? config.bars.colourPalette[0] :
-                            numVal < 0 ? config.bars.colourPalette[1] :
-                                config.bars.colourPalette[2];
-
-                    const svg = cell.append("svg")
-                        .attr("width", barScales.width)
-                        .attr("height", barScales.height)
-                        .attr("aria-hidden", "true");
-
-                    svg.append("rect")
-                        .attr("x", barScales.x.range()[0])
-                        .attr("y", 0)
-                        .attr("width", barScales.x.range()[1] - barScales.x.range()[0])
-                        .attr("height", barHeight)
-                        .attr("fill", ONScolours.grey10);
-
-                    svg.append("rect")
-                        .attr("x", Math.min(zeroX, valueX))
-                        .attr("y", 0)
-                        .attr("width", Math.abs(valueX - zeroX))
-                        .attr("height", barHeight)
-                        .attr("fill", barColour);
-
-                    svg.append("line")
-                        .attr("x1", zeroX)
-                        .attr("x2", zeroX)
-                        .attr("y1", 0)
-                        .attr("y2", barHeight)
-                        .attr("stroke-width", 1)
-                        .attr("stroke", ONScolours.grey100);
-
-                    if (config.bars.dataLabels) {
-
-                        addMiniBarLabel({
-                            svg,
-                            value: numVal,
-                            xScale: barScales.x,
-                            width: barScales.width,
-                            height: barScales.height,
-                            pad: barScales.pad,
-                            barColour,
-                            numberFormat: config.bars.numFormat
-                        });
-
-                    }
-
-                    cell.append("span")
-                        .attr("class", "visually-hidden")
-                        .text(d3.format(config.bars.numFormat)(Math.abs(numVal)));
+                /* ---------------------------------------------
+                   DRAW ARROWS
+                   --------------------------------------------- */
+                if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
+                    addArrows({
+                        cell,
+                        d,
+                        config
+                    });
 
                     return;
                 }
@@ -584,82 +489,38 @@ Renders configured columns as small horizontal bars.
                 }
 
 
+
+
+
                 /* ---------------------------------------------
-                   DRAW ARROWS
-                   --------------------------------------------- */
-                if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
-
-                    const raw = (d.value ?? "").toString().trim();
-                    const numVal = raw === "" ? NaN : +raw;
-
-                    const changeText =
-                        numVal < 0 ? "lower" :
-                            numVal > 0 ? "higher" :
-                                "No change";
-
-                    const valueText =
-                        numVal < 0 ? "lower" :
-                            numVal > 0 ? "higher" :
-                                "No change";
-
-                    const arrowColour =
-                        numVal < 0 ? config.arrowIcons.colourPalette[0] :
-                            numVal > 0 ? config.arrowIcons.colourPalette[1] :
-                                config.arrowIcons.colourPalette[2];
-
-                    const arrowSymbol = numVal > 0 ? "<img src='../lib-tables/uparrow.svg' alt='Arrow pointing up' width='12' height='14'>" :
-                        numVal < 0 ? "<img src='../lib-tables/downarrow.svg' alt='Arrow pointing down' width='12' height='14'>" :
-                            ""
-
-                    const formattedValue = d3.format(config.arrowIcons.numFormat)(Math.abs(numVal));
-
-
-                    const wrapper = cell.append("span")
-                        .style("display", "inline-flex")
-                        .style("align-items", "center")
-                        .style("gap", "4px")
-                        .style(
-                            "background-color",
-                            d3.color(arrowColour).copy({ opacity: 0.3 })
-                        )
-                        .style("padding", "8px");
-
-
-
-                    wrapper.append("span")
-                        .attr("class", "arrow-icon")
-                        .attr("aria-hidden", "true")
-                        .html(arrowSymbol);
-
-                    if (numVal != 0) {
-                        wrapper.append("span")
-                            .style("font-weight", "bold")
-                            .text(formattedValue + config.arrowIcons.suffixText);
-                    }
-
-                    wrapper.append("span")
-                        .text(changeText);
-
-                    return;
-                }
-
+                PROCESS HTML COLUMNS
+                --------------------------------------------- */
                 if (d.type === "h") {
                     cell.html(raw);
                     return;
                 }
 
 
-
+                /* ---------------------------------------------
+                PROCESS NUMBER COLUMNS
+                --------------------------------------------- */
                 if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
                     cell.text(numberFormatters[d.i](raw));
                     return;
                 }
 
+
+                /* ---------------------------------------------
+                ALL OTHER COLUMNS
+                --------------------------------------------- */
                 cell.text(raw);
             });
     });
 
 
+    /* ---------------------------------------------
+    FREEZE FIRST COLUMN
+    --------------------------------------------- */
     if (config.freezeFirstColumn.enabled) {
         scrollWrapper.classed("freeze-first-col", true);
 

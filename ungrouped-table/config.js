@@ -9,8 +9,8 @@ config = {
 	"sourceText": "Office for National Statistics",
 	"minColWidth": 40,
 	"maxColWidth": 150,
-	"boldRows": null,
-	"fixRowHeight": false, // all rows as tall as largest row
+	// "boldRows": null,
+	// "fixRowHeight": false, // all rows as tall as largest row
 	////// Visual settings //////
 	// category icons
 	"categoryIcons": {
@@ -57,14 +57,14 @@ config = {
 	"freezeFirstColumn": {
 		"enabled": true,
 		"firstColWidth": 100
-	},
-	// pagination
-	"pagination": {
-		"enabled": true,
-		"numRows": 10, // number of data rows shown per page when paginate is true
-	},
-	// filters
-	"filters": ["Income"],
+	} //,
+	// // pagination
+	// "pagination": {
+	// 	"enabled": true,
+	// 	"numRows": 10, // number of data rows shown per page when paginate is true
+	// },
+	// // filters
+	// "filters": ["Income"],
 	// sorting
 	// search
 }
