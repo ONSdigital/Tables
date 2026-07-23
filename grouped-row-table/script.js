@@ -176,16 +176,13 @@ Renders configured columns as small horizontal bars.
 
     }
 
-
-
-
-
     /* ---------------------------------------------
    SPARKLINE SETUP
    --------------------------------------------- */
+
     let sparklineRange = null;
 
-    if (Array.isArray(config.sparklines.columns) && config.sparklines.columns.length === 2) {
+    if (config.sparklines.enabled && Array.isArray(config.sparklines.columns) && config.sparklines.columns.length === 2) {
         const startIdx = valueColumns.indexOf(config.sparklines.columns[0]);
         const endIdx = valueColumns.indexOf(config.sparklines.columns[1]);
 
@@ -242,7 +239,7 @@ Renders configured columns as small horizontal bars.
 
     let sparklineScales = null;
 
-    if (sparklineRange) {
+    if (config.sparklines.enabled && sparklineRange) {
 
         const allSparklineValues = tableData.flatMap(row =>
             sparklineRange.cols.map(col => {
@@ -421,7 +418,7 @@ Renders configured columns as small horizontal bars.
                     /* ---------------------------------------------
                     DRAW SPARKLINES
                     --------------------------------------------- */
-                    if (d.kind === "sparkline") {
+                    if (config.sparklines.enabled &&d.kind === "sparkline") {
 
                         addSparkline({
                             cell,
@@ -559,7 +556,7 @@ Renders configured columns as small horizontal bars.
 
             tr.selectAll("td")
                 .data(columnBlocks.map(d => {
-                    if (d.kind === "sparkline") {
+                    if (config.sparklines.enabled &&d.kind === "sparkline") {
                         return {
                             kind: "sparkline",
                             cols: d.cols,
@@ -605,7 +602,7 @@ Renders configured columns as small horizontal bars.
                     /* ---------------------------------------------
                     DRAW SPARKLINES
                     --------------------------------------------- */
-                    if (d.kind === "sparkline") {
+                    if (config.sparklines.enabled &&d.kind === "sparkline") {
 
                         addSparkline({
                             cell,

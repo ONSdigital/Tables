@@ -180,20 +180,23 @@ Renders configured columns as small horizontal bars.
        --------------------------------------------- */
     let sparklineRange = null;
 
-    if (Array.isArray(config.sparklines.columns) && config.sparklines.columns.length === 2) {
-        const startIdx = valueColumns.indexOf(config.sparklines.columns[0]);
-        const endIdx = valueColumns.indexOf(config.sparklines.columns[1]);
+    if (config.sparklines.enabled) {
+        if (Array.isArray(config.sparklines.columns) && config.sparklines.columns.length === 2) {
+            const startIdx = valueColumns.indexOf(config.sparklines.columns[0]);
+            const endIdx = valueColumns.indexOf(config.sparklines.columns[1]);
 
-        if (startIdx !== -1 && endIdx !== -1) {
-            const lo = Math.min(startIdx, endIdx);
-            const hi = Math.max(startIdx, endIdx);
-            sparklineRange = {
-                startIdx: lo,
-                endIdx: hi,
-                cols: valueColumns.slice(lo, hi + 1)
-            };
+            if (startIdx !== -1 && endIdx !== -1) {
+                const lo = Math.min(startIdx, endIdx);
+                const hi = Math.max(startIdx, endIdx);
+                sparklineRange = {
+                    startIdx: lo,
+                    endIdx: hi,
+                    cols: valueColumns.slice(lo, hi + 1)
+                };
+            }
         }
     }
+
 
     const sparklineColTitle = config.sparklines.title || "Trend";
 
@@ -411,7 +414,7 @@ Renders configured columns as small horizontal bars.
                 /* ---------------------------------------------
                 DRAW SPARKLINES
                 --------------------------------------------- */
-                if (d.kind === "sparkline") {
+                if (config.sparklines.enabled && d.kind === "sparkline") {
 
                     addSparkline({
                         cell,
