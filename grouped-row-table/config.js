@@ -55,7 +55,7 @@ config = {
 	// Freeze first column
 	"freezeFirstColumn": {
 		"enabled": true,
-		"firstColWidth": 100
+		"firstColWidth": 150
 	} //,
 	// // pagination
 	// "pagination": {

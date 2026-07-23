@@ -1,0 +1,12 @@
+group,name,Level,Value 1,Value 2,Change,2020,2021,2022,2023,2024,2025,2026
+Group 1,16-17,High,1712,1630,95.2,1,5,6,1,7,-2,-2
+Group 1,18-19,High,1421,1214,85.4,5,-1,7,7,0,-3,3
+Group 1,20+,Low,54995,18344,33.4,6,-1,2,5,1,-2,3
+Group 1,Total,Medium,58128,21188,36.5,-2,5,-1,-3,0,0,5
+Group 2,Male,Medium,27800,11333,40.8,1,-2,3,-1,1,1,-2
+Group 2,Female,Medium,30328,9855,32.5,5,1,-2,2,4,6,6
+Group 2,Total,Medium,58128,21188,36.5,-2,-2,-2,-2,-3,1,0
+Group 3,White,Medium,50435,17866,35.4,7,4,0,-1,6,-2,5
+Group 3,All Ethnicities Other than White,Medium,7665,3309,43.2,5,3,1,7,0,-3,-1
+Group 3,Refused,Medium,28,13,46.4,1,1,-2,4,6,-2,5
+Group 3,Total,Medium,58128,21188,36.5,-2,5,-1,-3,0,0,5
