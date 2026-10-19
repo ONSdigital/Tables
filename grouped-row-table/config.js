@@ -56,12 +56,12 @@ config = {
 	"freezeFirstColumn": {
 		"enabled": true,
 		"firstColWidth": 150
-	} //,
+	} ,
 	// // pagination
-	// "pagination": {
-	// 	"enabled": true,
-	// 	"numRows": 10, // number of data rows shown per page when paginate is true
-	// },
+	"pagination": {
+		"enabled": true,
+		"numRows": 10, // number of data rows shown per page when paginate is true
+	} //,
 	// // filters
 	// "filters": ["Income"],
 	// search
