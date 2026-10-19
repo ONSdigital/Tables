@@ -20,6 +20,7 @@ The following features have or will be available for each table template and can
 | Sparklines               | Yes       | Yes         |                          |
 | Bars                     | Yes       | Yes         |                          |
 | Top left column title    | Yes       | No          |                          |
+| Striped rows             | Yes       | Yes         |                          |
 | **Interactive features** |           |             |                          |
 | Pagination               | Yes       | Yes         | Default 10 rows per page |
 | Freeze first column      | Yes       | Yes         |                          |
