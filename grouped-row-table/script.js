@@ -6,6 +6,7 @@ import { addArrows } from "../lib-tables/arrows.js";
 let container = d3.select('#table-container');
 let tableData;
 let pymChild = null;
+let currentPage = 1;
 
 /* =========================================================
    MAIN RENDER FUNCTION
@@ -292,6 +293,8 @@ Renders configured columns as small horizontal bars.
 
 
 
+
+
     /* =========================================================
        SCROLL WRAPPER
        ========================================================= */
@@ -354,355 +357,501 @@ Renders configured columns as small horizontal bars.
     const tbody = table.append("tbody");
     const colSpan = valueColumns.length + 1;
 
-    const ungroupedRows = [...grouped].find(([g]) => !g || g.trim() === "");
+    /* =========================================================
+       PAGINATION CONTAINER
+       ========================================================= */
+    const paginationEnabled = config.pagination.enabled;
+    const numRows = Math.max(1, +config.pagination.numRows || 10);
 
-    if (ungroupedRows) {
-        const [, rows] = ungroupedRows;
+    const pagination = container.append("nav")
+        .attr("class", "pagination")
+        .attr("aria-label", "Table pagination");
 
-        rows.forEach((row, index) => {
-            const rowId = `ungrouped-r${index + 1}`;
-            const tr = tbody.append("tr");
+    function renderPagination(start, end, totalRows, totalPages) {
+        pagination.html("");
 
-            tr.append("th")
-                .attr("id", rowId)
-                .attr("scope", "row")
-                .attr("class", "col--text")
-                .text(row[nameColumn]);
+        if (!paginationEnabled) return;
 
-            tr.selectAll("td")
-                .data(columnBlocks.map(d => {
-                    if (d.kind === "sparkline") {
+        const statusText = totalRows === 0
+            ? "0 of 0 rows"
+            : `${start + 1}–${end} of ${totalRows} rows`;
+
+        pagination.append("div")
+            .attr("class", "pagination-status")
+            .attr("role", "status")
+            .attr("aria-live", "polite")
+            .attr("aria-atomic", "true")
+            .text(statusText);
+
+        if (totalPages <= 1 || totalRows === 0) return;
+
+        const controls = pagination.append("div")
+            .attr("class", "pagination-controls");
+
+        function addButton(label, page, disabled = false, active = false) {
+            const btn = controls.append("button")
+                .attr("type", "button")
+                .classed("active", active)
+                .attr("disabled", disabled ? true : null)
+                .attr("aria-current", active ? "page" : null)
+                .attr("data-pagination-control", label)
+                .attr(
+                    "aria-label",
+                    typeof label === "number"
+                        ? active
+                            ? `Page ${label}, current page`
+                            : `Go to page ${label}`
+                        : `${label} page`
+                )
+                .text(label)
+                .on("click", () => {
+                    renderPage(page, label);
+                });
+
+            btn.on("keydown", (event) => {
+
+                if (event.key === "ArrowRight" && currentPage < totalPages) {
+                    event.preventDefault();
+                    renderPage(currentPage + 1, label);
+                }
+
+                if (event.key === "ArrowLeft" && currentPage > 1) {
+                    event.preventDefault();
+                    renderPage(currentPage - 1, label);
+                }
+            });
+        }
+
+        addButton("Previous", currentPage - 1, currentPage === 1);
+
+        let pages = [];
+
+        if (totalPages <= 7) {
+            pages = d3.range(1, totalPages + 1);
+        } else {
+            pages = [1];
+
+            if (currentPage > 3) pages.push("...");
+
+            for (
+                let i = Math.max(2, currentPage - 1);
+                i <= Math.min(totalPages - 1, currentPage + 1);
+                i++
+            ) {
+                pages.push(i);
+            }
+
+            if (currentPage < totalPages - 2) pages.push("...");
+
+            pages.push(totalPages);
+        }
+
+        pages.forEach(p => {
+            if (p === "...") {
+                controls.append("span")
+                    .attr("class", "ellipsis")
+                    .attr("aria-hidden", "true")
+                    .text("...");
+            } else {
+                addButton(p, p, false, p === currentPage);
+            }
+        });
+
+        addButton("Next", currentPage + 1, currentPage === totalPages);
+    }
+
+    function renderPage(page, focusControl = null) {
+        const totalRows = tableData.length;
+        const totalPages = paginationEnabled
+            ? Math.max(1, Math.ceil(totalRows / numRows))
+            : 1;
+
+        currentPage = Math.min(Math.max(1, page), totalPages);
+
+        const start = paginationEnabled
+            ? (currentPage - 1) * numRows
+            : 0;
+
+        const end = paginationEnabled
+            ? Math.min(start + numRows, totalRows)
+            : totalRows;
+
+        const pageData = tableData.slice(start, end);
+        const pageGrouped = d3.group(pageData, d => d[groupColumn]);
+
+        tbody.html("");
+
+        const ungroupedRows = [...pageGrouped].find(([g]) => !g || g.trim() === "");
+
+        if (ungroupedRows) {
+            const [, rows] = ungroupedRows;
+
+            rows.forEach((row) => {
+                const rowIndex = tableData.indexOf(row);
+                const rowId = `ungrouped-r${rowIndex + 1}`;
+                const tr = tbody.append("tr");
+
+                tr.append("th")
+                    .attr("id", rowId)
+                    .attr("scope", "row")
+                    .attr("class", "col--text")
+                    .text(row[nameColumn]);
+
+                tr.selectAll("td")
+                    .data(columnBlocks.map(d => {
+                        if (d.kind === "sparkline") {
+                            return {
+                                kind: "sparkline",
+                                cols: d.cols,
+                                col: d.title,
+                                value: null,
+                                type: "h",
+                                i: null
+                            };
+                        }
+
+                        if (d.kind === "bar") {
+                            return {
+                                kind: "bar",
+                                col: d.col,
+                                value: row[d.col],
+                                type: d.type,
+                                i: d.i
+                            };
+                        }
+
                         return {
-                            kind: "sparkline",
-                            cols: d.cols,
-                            col: d.title,
-                            value: null,
-                            type: "h",
-                            i: null
-                        };
-                    }
-
-                    if (d.kind === "bar") {
-                        return {
-                            kind: "bar",
+                            kind: "value",
                             col: d.col,
                             value: row[d.col],
                             type: d.type,
                             i: d.i
                         };
-                    }
-
-                    return {
-                        kind: "value",
-                        col: d.col,
-                        value: row[d.col],
-                        type: d.type,
-                        i: d.i
-                    };
-                }))
-                .enter()
-                .append("td")
-                .attr("headers", d => `${rowId} ${d.col}`)
-                .attr("class", d =>
-                    d.type === "n" ? "col--number" :
-                        d.type === "d" ? "col--date" :
-                            "col--text"
-                )
+                    }))
+                    .enter()
+                    .append("td")
+                    .attr("headers", d => `${rowId} ${d.col}`)
+                    .attr("class", d =>
+                        d.type === "n" ? "col--number" :
+                            d.type === "d" ? "col--date" :
+                                "col--text"
+                    )
 
 
 
-                .each(function (d) {
-                    const cell = d3.select(this);
+                    .each(function (d) {
+                        const cell = d3.select(this);
 
 
-                    /* ---------------------------------------------
-                    DRAW SPARKLINES
-                    --------------------------------------------- */
-                    if (config.sparklines.enabled &&d.kind === "sparkline") {
+                        /* ---------------------------------------------
+                        DRAW SPARKLINES
+                        --------------------------------------------- */
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
 
-                        addSparkline({
-                            cell,
-                            row,
-                            d,
-                            config,
-                            sparklineScales,
-                            ONScolours
-                        });
+                            addSparkline({
+                                cell,
+                                row,
+                                d,
+                                config,
+                                sparklineScales,
+                                ONScolours
+                            });
 
-                        return;
-                    }
-
-
-                    /* ---------------------------------------------
-                    DRAW BARS
-                    --------------------------------------------- */
-                    if (d.kind === "bar") {
-
-                        addBars({
-                            cell,
-                            row,
-                            d,
-                            config,
-                            barScales,
-                            barHeight
-                        });
-
-                        return;
-                    }
+                            return;
+                        }
 
 
-                    /* ---------------------------------------------
-                    DRAW ARROWS
-                    --------------------------------------------- */
-                    if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
-                        addArrows({
-                            cell,
-                            d,
-                            config
-                        });
+                        /* ---------------------------------------------
+                        DRAW BARS
+                        --------------------------------------------- */
+                        if (d.kind === "bar") {
 
-                        return;
-                    }
+                            addBars({
+                                cell,
+                                row,
+                                d,
+                                config,
+                                barScales,
+                                barHeight
+                            });
 
-
-                    /* ---------------------------------------------
-                    DRAW CATEGORY ICONS
-                    --------------------------------------------- */
-                    const raw = (d.value ?? "").toString().trim();
-                    if (raw === "") {
-                        cell.text(config.nullText);
-                        return;
-                    }
-
-                    if (config.categoryIcons.enabled && categoryColumns.includes(d.col)) {
-
-                        const wrapper = cell.append("span")
-                            .style("display", "inline-flex")
-                            .style("align-items", "center");
-
-                        wrapper.append("span")
-                            .style("width", config.categoryIcons.circleRadius + "px")
-                            .style("height", config.categoryIcons.circleRadius + "px")
-                            .style("border-radius", "50%")
-                            .style("display", "inline-block")
-                            .style("margin-right", "6px")
-                            .style("background-color", categoryScale(raw));
-
-                        wrapper.append("span")
-                            .text(raw);
-
-                        return;
-                    }
-
-                    /* ---------------------------------------------
-                    PROCESS HTML COLUMNS
-                    --------------------------------------------- */
-                    if (d.type === "h") {
-                        cell.html(raw);
-                        return;
-                    }
+                            return;
+                        }
 
 
-                    /* ---------------------------------------------
-                    PROCESS NUMBER COLUMNS
-                    --------------------------------------------- */
-                    if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
-                        cell.text(numberFormatters[d.i](raw));
-                        return;
-                    }
+                        /* ---------------------------------------------
+                        DRAW ARROWS
+                        --------------------------------------------- */
+                        if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
+                            addArrows({
+                                cell,
+                                d,
+                                config
+                            });
 
-                    /* ---------------------------------------------
-                    ALL OTHER COLUMNS
-                    --------------------------------------------- */
-                    cell.text(raw);
-                });
+                            return;
+                        }
+
+
+                        /* ---------------------------------------------
+                        DRAW CATEGORY ICONS
+                        --------------------------------------------- */
+                        const raw = (d.value ?? "").toString().trim();
+                        if (raw === "") {
+                            cell.text(config.nullText);
+                            return;
+                        }
+
+                        if (config.categoryIcons.enabled && categoryColumns.includes(d.col)) {
+
+                            const wrapper = cell.append("span")
+                                .style("display", "inline-flex")
+                                .style("align-items", "center");
+
+                            wrapper.append("span")
+                                .style("width", config.categoryIcons.circleRadius + "px")
+                                .style("height", config.categoryIcons.circleRadius + "px")
+                                .style("border-radius", "50%")
+                                .style("display", "inline-block")
+                                .style("margin-right", "6px")
+                                .style("background-color", categoryScale(raw));
+
+                            wrapper.append("span")
+                                .text(raw);
+
+                            return;
+                        }
+
+                        /* ---------------------------------------------
+                        PROCESS HTML COLUMNS
+                        --------------------------------------------- */
+                        if (d.type === "h") {
+                            cell.html(raw);
+                            return;
+                        }
+
+
+                        /* ---------------------------------------------
+                        PROCESS NUMBER COLUMNS
+                        --------------------------------------------- */
+                        if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
+                            cell.text(numberFormatters[d.i](raw));
+                            return;
+                        }
+
+                        /* ---------------------------------------------
+                        ALL OTHER COLUMNS
+                        --------------------------------------------- */
+                        cell.text(raw);
+                    });
 
 
 
 
 
-        });
-    }
-
-    for (const [groupName, rows] of grouped) {
-        if (!groupName || groupName.trim() === "") continue;
-
-        const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
 
-        const groupTh = tbody.append("tr")
-            .append("th")
-            .attr("id", groupId)
-            .attr("scope", "colgroup")
-            .attr("colspan", colSpan)
-            .classed("colgroup-header", true);
+            });
+        }
 
-        groupTh.append("span")
-            .attr("class", "sticky-first-col")
-            .style("min-width", (config.firstColWidth || 150) + "px")
-            .text(groupName);
+        for (const [groupName, rows] of pageGrouped) {
+            if (!groupName || groupName.trim() === "") continue;
+
+            const groupId = groupName.toLowerCase().replace(/\s+/g, "");
 
 
-        rows.forEach((row, index) => {
-            const rowId = `${groupId}-r${index + 1}`;
-            const tr = tbody.append("tr");
+            const groupTh = tbody.append("tr")
+                .append("th")
+                .attr("id", groupId)
+                .attr("scope", "colgroup")
+                .attr("colspan", colSpan)
+                .classed("colgroup-header", true);
 
-            tr.append("th")
-                .attr("id", rowId)
-                .attr("scope", "row")
-                .attr("headers", groupId)
-                .attr("class", "col--text")
-                .text(row[nameColumn]);
+            groupTh.append("span")
+                .attr("class", "sticky-first-col")
+                .style("min-width", (config.firstColWidth || 150) + "px")
+                .text(groupName);
 
-            tr.selectAll("td")
-                .data(columnBlocks.map(d => {
-                    if (config.sparklines.enabled &&d.kind === "sparkline") {
+
+            const allGroupRows = grouped.get(groupName);
+
+            rows.forEach((row) => {
+                const rowIndex = allGroupRows.indexOf(row);
+                const rowId = `${groupId}-r${rowIndex + 1}`;
+                const tr = tbody.append("tr");
+
+                tr.append("th")
+                    .attr("id", rowId)
+                    .attr("scope", "row")
+                    .attr("headers", groupId)
+                    .attr("class", "col--text")
+                    .text(row[nameColumn]);
+
+                tr.selectAll("td")
+                    .data(columnBlocks.map(d => {
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
+                            return {
+                                kind: "sparkline",
+                                cols: d.cols,
+                                col: d.title,
+                                value: null,
+                                type: "h",
+                                i: null
+                            };
+                        }
+
+                        if (d.kind === "bar") {
+                            return {
+                                kind: "bar",
+                                col: d.col,
+                                value: row[d.col],
+                                type: d.type,
+                                i: d.i
+                            };
+                        }
+
                         return {
-                            kind: "sparkline",
-                            cols: d.cols,
-                            col: d.title,
-                            value: null,
-                            type: "h",
-                            i: null
-                        };
-                    }
-
-                    if (d.kind === "bar") {
-                        return {
-                            kind: "bar",
+                            kind: "value",
                             col: d.col,
                             value: row[d.col],
                             type: d.type,
                             i: d.i
                         };
-                    }
-
-                    return {
-                        kind: "value",
-                        col: d.col,
-                        value: row[d.col],
-                        type: d.type,
-                        i: d.i
-                    };
-                }))
-                .enter()
-                .append("td")
-                .attr("headers", d => `${rowId} ${d.col}`)
-                .attr("class", d =>
-                    d.type === "n" ? "col--number" :
-                        d.type === "d" ? "col--date" :
-                            "col--text"
-                )
+                    }))
+                    .enter()
+                    .append("td")
+                    .attr("headers", d => `${rowId} ${d.col}`)
+                    .attr("class", d =>
+                        d.type === "n" ? "col--number" :
+                            d.type === "d" ? "col--date" :
+                                "col--text"
+                    )
 
 
-                .each(function (d) {
-                    const cell = d3.select(this);
+                    .each(function (d) {
+                        const cell = d3.select(this);
 
 
-                    /* ---------------------------------------------
-                    DRAW SPARKLINES
-                    --------------------------------------------- */
-                    if (config.sparklines.enabled &&d.kind === "sparkline") {
+                        /* ---------------------------------------------
+                        DRAW SPARKLINES
+                        --------------------------------------------- */
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
 
-                        addSparkline({
-                            cell,
-                            row,
-                            d,
-                            config,
-                            sparklineScales,
-                            ONScolours
-                        });
+                            addSparkline({
+                                cell,
+                                row,
+                                d,
+                                config,
+                                sparklineScales,
+                                ONScolours
+                            });
 
-                        return;
-                    }
-
-
-                    /* ---------------------------------------------
-                    DRAW BARS
-                    --------------------------------------------- */
-                    if (d.kind === "bar") {
-
-                        addBars({
-                            cell,
-                            row,
-                            d,
-                            config,
-                            barScales,
-                            barHeight
-                        });
-
-                        return;
-                    }
-
-                    /* ---------------------------------------------
-                    DRAW ARROWS
-                    --------------------------------------------- */
-                    if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
-                        addArrows({
-                            cell,
-                            d,
-                            config
-                        });
-
-                        return;
-                    }
+                            return;
+                        }
 
 
-                    /* ---------------------------------------------
-                    DRAW CATEGORY ICONS
-                    --------------------------------------------- */
-                    const raw = (d.value ?? "").toString().trim();
-                    if (raw === "") {
-                        cell.text(config.nullText);
-                        return;
-                    }
-                    if (config.categoryIcons.enabled && categoryColumns.includes(d.col)) {
+                        /* ---------------------------------------------
+                        DRAW BARS
+                        --------------------------------------------- */
+                        if (d.kind === "bar") {
 
-                        const wrapper = cell.append("span")
-                            .style("display", "inline-flex")
-                            .style("align-items", "center");
+                            addBars({
+                                cell,
+                                row,
+                                d,
+                                config,
+                                barScales,
+                                barHeight
+                            });
 
-                        wrapper.append("span")
-                            .style("width", config.categoryIcons.circleRadius + "px")
-                            .style("height", config.categoryIcons.circleRadius + "px")
-                            .style("border-radius", "50%")
-                            .style("display", "inline-block")
-                            .style("margin-right", "6px")
-                            .style("background-color", categoryScale(raw));
+                            return;
+                        }
 
-                        wrapper.append("span")
-                            .text(raw);
+                        /* ---------------------------------------------
+                        DRAW ARROWS
+                        --------------------------------------------- */
+                        if (config.arrowIcons.enabled && config.arrowIcons.columns.includes(d.col)) {
+                            addArrows({
+                                cell,
+                                d,
+                                config
+                            });
 
-                        return;
-                    }
-
-                    /* ---------------------------------------------
-                    PROCESS HTML COLUMNS
-                    --------------------------------------------- */
-                    if (d.type === "h") {
-                        cell.html(raw);
-                        return;
-                    }
+                            return;
+                        }
 
 
-                    /* ---------------------------------------------
-                    PROCESS NUMBER COLUMNS
-                    --------------------------------------------- */
-                    if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
-                        cell.text(numberFormatters[d.i](raw));
-                        return;
-                    }
+                        /* ---------------------------------------------
+                        DRAW CATEGORY ICONS
+                        --------------------------------------------- */
+                        const raw = (d.value ?? "").toString().trim();
+                        if (raw === "") {
+                            cell.text(config.nullText);
+                            return;
+                        }
+                        if (config.categoryIcons.enabled && categoryColumns.includes(d.col)) {
 
-                    /* ---------------------------------------------
-                    ALL OTHER COLUMNS
-                    --------------------------------------------- */
-                    cell.text(raw);
-                });
+                            const wrapper = cell.append("span")
+                                .style("display", "inline-flex")
+                                .style("align-items", "center");
+
+                            wrapper.append("span")
+                                .style("width", config.categoryIcons.circleRadius + "px")
+                                .style("height", config.categoryIcons.circleRadius + "px")
+                                .style("border-radius", "50%")
+                                .style("display", "inline-block")
+                                .style("margin-right", "6px")
+                                .style("background-color", categoryScale(raw));
+
+                            wrapper.append("span")
+                                .text(raw);
+
+                            return;
+                        }
+
+                        /* ---------------------------------------------
+                        PROCESS HTML COLUMNS
+                        --------------------------------------------- */
+                        if (d.type === "h") {
+                            cell.html(raw);
+                            return;
+                        }
+
+
+                        /* ---------------------------------------------
+                        PROCESS NUMBER COLUMNS
+                        --------------------------------------------- */
+                        if (d.type === "n" && !isNaN(raw) && numberFormatters[d.i]) {
+                            cell.text(numberFormatters[d.i](raw));
+                            return;
+                        }
+
+                        /* ---------------------------------------------
+                        ALL OTHER COLUMNS
+                        --------------------------------------------- */
+                        cell.text(raw);
+                    });
 
 
 
-        });
+            });
+        }
+
+        renderPagination(start, end, totalRows, totalPages);
+
+        if (focusControl !== null) {
+            pagination
+                .select(`[data-pagination-control="${focusControl}"]`)
+                .node()
+                ?.focus();
+        }
+
+        if (pymChild) {
+            setTimeout(() => pymChild.sendHeight(), 0);
+        }
     }
+
+    renderPage(currentPage);
 
 
     /* ---------------------------------------------

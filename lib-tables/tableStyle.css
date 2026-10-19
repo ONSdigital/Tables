@@ -103,3 +103,54 @@ table thead th {
 .table-scroll.freeze-first-col .sticky-first-col {
     box-shadow: 1px 0 0 white;
 }
+
+/* Pagination */
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.pagination-status {
+  color: #555;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pagination-controls button {
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background: #f3f3f3;
+  color: black;
+}
+
+.pagination-controls button.active {
+  background: #0078d4;
+  color: white;
+  border-color: #0078d4;
+  font-weight: bold;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagination-controls .ellipsis {
+  padding: 0 6px;
+  color: #888;
+}
