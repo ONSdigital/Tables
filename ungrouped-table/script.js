@@ -400,9 +400,10 @@ function drawTable() {
                 .attr("disabled", disabled ? true : null)
                 .attr("aria-current", active ? "page" : null)
                 .attr("aria-label", ariaLabel)
+                .attr("data-pagination-control", label)
                 .text(label)
                 .on("click", () => {
-                    renderPage(page);
+                    renderPage(page, label);
                 })
                 .on("keydown", event => {
                     if (
@@ -410,7 +411,7 @@ function drawTable() {
                         currentPage < totalPages
                     ) {
                         event.preventDefault();
-                        renderPage(currentPage + 1);
+                        renderPage(currentPage + 1, label);
                     }
 
                     if (
@@ -418,7 +419,7 @@ function drawTable() {
                         currentPage > 1
                     ) {
                         event.preventDefault();
-                        renderPage(currentPage - 1);
+                        renderPage(currentPage - 1, label);
                     }
                 });
         }
@@ -465,7 +466,7 @@ function drawTable() {
         addButton("Next", currentPage + 1, currentPage === totalPages);
     }
 
-    function renderPage(page) {
+    function renderPage(page, focusControl = null) {
         const totalRows = tableData.length;
 
         const totalPages = paginationEnabled
@@ -641,6 +642,13 @@ function drawTable() {
         });
 
         renderPagination(start, end, totalRows, totalPages);
+
+        if (focusControl !== null) {
+            pagination
+                .select(`[data-pagination-control="${focusControl}"]`)
+                .node()
+                ?.focus();
+        }
 
         if (pymChild) {
             setTimeout(() => pymChild.sendHeight(), 0);

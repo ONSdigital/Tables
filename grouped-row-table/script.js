@@ -294,6 +294,7 @@ Renders configured columns as small horizontal bars.
 
 
 
+
     /* =========================================================
        SCROLL WRAPPER
        ========================================================= */
@@ -362,8 +363,9 @@ Renders configured columns as small horizontal bars.
     const paginationEnabled = config.pagination.enabled;
     const numRows = Math.max(1, +config.pagination.numRows || 10);
 
-    const pagination = container.append("div")
-        .attr("class", "pagination");
+    const pagination = container.append("nav")
+        .attr("class", "pagination")
+        .attr("aria-label", "Table pagination");
 
     function renderPagination(start, end, totalRows, totalPages) {
         pagination.html("");
@@ -384,9 +386,7 @@ Renders configured columns as small horizontal bars.
         if (totalPages <= 1 || totalRows === 0) return;
 
         const controls = pagination.append("div")
-            .attr("class", "pagination-controls")
-            .attr("role", "navigation")
-            .attr("aria-label", "Table pagination");
+            .attr("class", "pagination-controls");
 
         function addButton(label, page, disabled = false, active = false) {
             const btn = controls.append("button")
@@ -394,6 +394,7 @@ Renders configured columns as small horizontal bars.
                 .classed("active", active)
                 .attr("disabled", disabled ? true : null)
                 .attr("aria-current", active ? "page" : null)
+                .attr("data-pagination-control", label)
                 .attr(
                     "aria-label",
                     typeof label === "number"
@@ -404,23 +405,19 @@ Renders configured columns as small horizontal bars.
                 )
                 .text(label)
                 .on("click", () => {
-                    renderPage(page);
+                    renderPage(page, label);
                 });
 
             btn.on("keydown", (event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    renderPage(page);
-                }
 
                 if (event.key === "ArrowRight" && currentPage < totalPages) {
                     event.preventDefault();
-                    renderPage(currentPage + 1);
+                    renderPage(currentPage + 1, label);
                 }
 
                 if (event.key === "ArrowLeft" && currentPage > 1) {
                     event.preventDefault();
-                    renderPage(currentPage - 1);
+                    renderPage(currentPage - 1, label);
                 }
             });
         }
@@ -463,7 +460,7 @@ Renders configured columns as small horizontal bars.
         addButton("Next", currentPage + 1, currentPage === totalPages);
     }
 
-    function renderPage(page) {
+    function renderPage(page, focusControl = null) {
         const totalRows = tableData.length;
         const totalPages = paginationEnabled
             ? Math.max(1, Math.ceil(totalRows / numRows))
@@ -549,7 +546,7 @@ Renders configured columns as small horizontal bars.
                         /* ---------------------------------------------
                         DRAW SPARKLINES
                         --------------------------------------------- */
-                        if (config.sparklines.enabled &&d.kind === "sparkline") {
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
 
                             addSparkline({
                                 cell,
@@ -653,6 +650,7 @@ Renders configured columns as small horizontal bars.
 
 
 
+
             });
         }
 
@@ -691,7 +689,7 @@ Renders configured columns as small horizontal bars.
 
                 tr.selectAll("td")
                     .data(columnBlocks.map(d => {
-                        if (config.sparklines.enabled &&d.kind === "sparkline") {
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
                             return {
                                 kind: "sparkline",
                                 cols: d.cols,
@@ -737,7 +735,7 @@ Renders configured columns as small horizontal bars.
                         /* ---------------------------------------------
                         DRAW SPARKLINES
                         --------------------------------------------- */
-                        if (config.sparklines.enabled &&d.kind === "sparkline") {
+                        if (config.sparklines.enabled && d.kind === "sparkline") {
 
                             addSparkline({
                                 cell,
@@ -840,6 +838,13 @@ Renders configured columns as small horizontal bars.
         }
 
         renderPagination(start, end, totalRows, totalPages);
+
+        if (focusControl !== null) {
+            pagination
+                .select(`[data-pagination-control="${focusControl}"]`)
+                .node()
+                ?.focus();
+        }
 
         if (pymChild) {
             setTimeout(() => pymChild.sendHeight(), 0);
