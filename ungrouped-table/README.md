@@ -78,11 +78,15 @@ A rectangular table with no merged cells or grouping.
 - `freezeFirstColumn.enabled`: Keeps the first column fixed while horizontally scrolling.
 - `freezeFirstColumn.firstColWidth`: Width of the frozen first column in pixels.
 
+### Pagination
+
+- `pagination.enabled`: Set to true to enable pagination. Set to false to display all rows in the table.
+- `pagination.numRows`: Sets the number of data rows to display on each page when pagination is enabled.
+
 ## Features not yet implemented but coming soon
 
 * Option to bold format some rows
 * Option to force same height across all rows
-* Pagination
 * Filters
 * Sorting
 * Search
